@@ -24,8 +24,10 @@ async function fetchShifts(userId) {
         const q = query(collection(db, "pro_shifts"), where("userId", "==", userId));
         const querySnapshot = await getDocs(q);
         allShifts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log("Δεδομένα φορτώθηκαν:", allShifts);
-        // Εδώ θα καλέσουμε την UI.renderDashboard(allShifts) μόλις την φτιάξουμε
+        
+        // ΚΑΛΕΣΜΑ ΤΗΣ UI ΓΙΑ ΕΝΗΜΕΡΩΣΗ
+        UI.updateDashboard(allShifts);
+        
     } catch (error) {
         console.error("Σφάλμα στη φόρτωση:", error);
     }
