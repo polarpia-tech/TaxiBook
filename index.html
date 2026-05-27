@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>TaxiBook Pro</title>
     
+    <link rel="manifest" href="manifest.json">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TaxiBook Pro">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3448/3448636.png">
     <meta name="theme-color" content="#0a0a0a">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -444,7 +448,7 @@
                 saveShift: "Inregistreaza Tura", save: "Salveaza", cancel: "Anuleaza", navHome: "ACASA", navHistory: "ISTORIC",
                 editBtn: "Editeaza", shiftCountText: "ture in aceasta luna", editShiftTitle: "Editeaza",
                 cash: "Numerar", cards: "POS", free: "FreeNow", earningsAnalysis: "ANALIZA INCASARILOR", expensesAnalysis: "ANALIZA CHELTUIELILOR",
-                monthlyTrend: "EVOLUTIE LUNARA (BRUT VS NET)", driverLabel: "SOFER", driverIdLabel: "COD", taxiLabel: "TAXI", taxiNumLabel: "NUMAR TAXI",
+                monthlyTrend: "EVOLUTIE LUNARA (BRUT VS NET)", driverLabel: "SOFER", driverIdLabel: "COD", taxiLabel: "TAXI", taxiNumAR: "NUMAR TAXI",
                 fuel: "Combustibil", service: "Service", wash: "Spalare", otherExp: "Altele", grossLabel: "Brut", netLabel: "Net",
                 months: ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"]
             }
@@ -950,6 +954,16 @@
                         y: { grid: { color: '#141414' }, ticks: { color: '#525252', font: { size: 9 } } }
                     }
                 }
+            });
+        }
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Καταχωρήθηκε με επιτυχία!', reg))
+                    .catch(err => console.error('Αποτυχία καταχώρησης Service Worker:', err));
             });
         }
     </script>
