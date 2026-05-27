@@ -1,4 +1,4 @@
-const CACHE_NAME = 'taxibook-cache-v2'; // <-- Όταν κάνεις νέα αλλαγή στο index, το κάνεις v3, μετά v4 κτλ.
+const CACHE_NAME = 'taxibook-cache-v2.5'; // <-- Όταν κάνεις νέα αλλαγή στο index, το κάνεις v3, μετά v4 κτλ.
 const ASSETS = [
   './',
   './index.html',
