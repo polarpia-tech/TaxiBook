@@ -1,11 +1,11 @@
-const CACHE_NAME = 'taxibook-cache-v2.5'; // <-- Όταν κάνεις νέα αλλαγή στο index, το κάνεις v3, μετά v4 κτλ.
+const CACHE_NAME = 'taxibook-cache-v2.5'; 
 const ASSETS = [
   './',
   './index.html',
   './manifest.json'
 ];
 
-// Εγκατάσταση και αποθήκευση αρχείων
+// Εγκατάσταση και αποθήκευση αρχείων στο Cache
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -30,7 +30,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Σερβίρισμα αρχείων
+// Σερβίρισμα αρχείων (Offline Support)
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
