@@ -98,7 +98,6 @@
         .chart-container-rel { width: 100%; height: 160px; position: relative; }
         .chart-container-line { width: 100%; height: 180px; position: relative; }
 
-        /* Custom UI Elements */
         #customToast {
             position: fixed; bottom: 5.5rem; left: 50%; transform: translateX(-50%) translateY(150%);
             background-color: #eab308; color: #0a0a0a; padding: 0.75rem 1.5rem; border-radius: 50px;
@@ -242,7 +241,7 @@
             <div id="chartAnalysisBox" class="analysis-modal">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
                     <span style="font-size: 10px; font-weight:900; color:#eab308; letter-spacing:0.05em;">📊 ΕΞΥΠΝΗ ΑΝΑΛΥΣΗ ΔΕΔΟΜΕΝΩΝ</span>
-                    <button onclick="document.getElementById('chartAnalysisBox').style.display='none'" style="background:none; border:none; color:#525252; font-size:12px; font-weight:bold; cursor:pointer;">X</button>
+                    <button type="button" onclick="document.getElementById('chartAnalysisBox').style.display='none'" style="background:none; border:none; color:#525252; font-size:12px; font-weight:bold; cursor:pointer;">X</button>
                 </div>
                 <p id="chartAnalysisText" style="margin:0; font-size:0.8rem; color:#d4d4d4; line-height:1.4;"></p>
             </div>
@@ -250,14 +249,14 @@
             <div class="charts-wrapper">
                 <div class="charts-row-doughnuts">
                     <div class="chart-box" id="boxChart1">
-                        <span class="chart-title" data-i18n="earningsAnalysis">ΑΝΑΛΥΣΗ ΕΙΣΠΡΑΞΕΩΝ (Click)</span>
+                        <span class="chart-title" data-i18n="earningsAnalysis">ΑΝΑΛΥΣΗ ΕΙΣΠΡΑΞΕΩΝ</span>
                         <div class="chart-container-rel">
                             <canvas id="analyticsChart"></canvas>
                         </div>
                     </div>
                     
                     <div class="chart-box" id="boxChart2">
-                        <span class="chart-title" data-i18n="expensesAnalysis">ΑΝΑΛΥΣΗ ΕΞΟΔΩΝ (Click)</span>
+                        <span class="chart-title" data-i18n="expensesAnalysis">ΑΝΑΛΥΣΗ ΕΞΟΔΩΝ</span>
                         <div class="chart-container-rel">
                             <canvas id="expensesChart"></canvas>
                         </div>
@@ -455,7 +454,6 @@
         const floatingAddBtn = document.getElementById('floatingAddBtn');
         const navLogoutBtn = document.getElementById('navLogoutBtn');
 
-        // Custom Toast Notification Engine
         function showNotification(message) {
             const toast = document.getElementById('customToast');
             toast.textContent = message;
@@ -564,7 +562,7 @@
             showHomeBtn.classList.remove('active');
             showHistoryBtn.classList.remove('active');
             
-            if(tab === 'home') { homeTab.classList.remove('hidden'); showHomeBtn.add('active'); }
+            if(tab === 'home') { homeTab.classList.remove('hidden'); showHomeBtn.classList.add('active'); }
             else if(tab === 'history') { historyTab.classList.remove('hidden'); showHistoryBtn.classList.add('active'); }
             else if(tab === 'form') { formTab.classList.remove('hidden'); }
         }
@@ -646,11 +644,9 @@
             };
 
             shiftData.totalKm = shiftData.kmEnd - shiftData.kmStart;
-            // Τζίρος = Άθροισμα όλων των εισπράξεων
             shiftData.synolikesEispraxeis = shiftData.metrita + shiftData.kartes + shiftData.freenow + shiftData.uber;
             shiftData.totalExpenses = shiftData.kausima + shiftData.service + shiftData.plysimo + shiftData.allaExoda;
             
-            // Μαθηματικό Μοντέλο: Μισθός 45% επί του Τζίρου + Tips - Έξοδα
             const driverWage = shiftData.synolikesEispraxeis * 0.45;
             shiftData.katharoKerdos = (driverWage + shiftData.tips) - shiftData.totalExpenses;
 
@@ -830,7 +826,6 @@
             routeTo('form');
         };
 
-        // UI Interactive Intelligence Engine
         function analyzeChartClick(chartName, label, value, extra = "") {
             const box = document.getElementById('chartAnalysisBox');
             const txt = document.getElementById('chartAnalysisText');
@@ -890,7 +885,7 @@
 
                 monthGross += data.synolikesEispraxeis || 0;
                 monthExp += data.totalExpenses || 0;
-                monthNet += data.katharoKerdos || 0; // Καθαρά οδηγού βάσει του 45%
+                monthNet += data.katharoKerdos || 0; 
                 monthKm += data.totalKm || 0;
                 monthTotalZ += data.taximetro || 0;
                 shiftCount++;
@@ -947,7 +942,7 @@
                             </div>
                         </div>
                         <div style="display: flex; justify-content: flex-end; margin-top: 10px; border-top: 1px solid #141414; padding-top: 8px;">
-                            <button onclick="startEditShift('${data.id}')" style="background: none; border: none; color: #737373; font-size: 11px; font-weight: bold; cursor: pointer;">${t.editBtn}</button>
+                            <button type="button" onclick="startEditShift('${data.id}')" style="background: none; border: none; color: #737373; font-size: 11px; font-weight: bold; cursor: pointer;">${t.editBtn}</button>
                         </div>
                     </div>`;
 
@@ -1042,7 +1037,7 @@
                         y: { grid: { color: '#141414' }, ticks: { color: '#525252', font: { size: 9 } } }
                     },
                     onClick: (e, elements) => {
-                        if (elements.length > 0) {
+                        if (elements.length > 0 && trendGrossData.length > 0) {
                             const idx = elements[0].index;
                             const label = trendChartInstance.data.labels[idx];
                             const grossVal = trendChartInstance.data.datasets[0].data[idx];
@@ -1054,7 +1049,6 @@
             });
         }
 
-        // Νέο Διαδραστικό Γράφημα Οριζόντιων Μπαρών
         function renderHourlyBarChart(labels, hourlyData) {
             const canvas = document.getElementById('hourlyBarChart');
             if(!canvas) return;
@@ -1083,7 +1077,7 @@
                         y: { grid: { color: '#141414' }, ticks: { color: '#525252', font: { size: 9 } } }
                     },
                     onClick: (e, elements) => {
-                        if (elements.length > 0) {
+                        if (elements.length > 0 && hourlyData.length > 0) {
                             const idx = elements[0].index;
                             const label = hourlyBarChartInstance.data.labels[idx];
                             const val = hourlyBarChartInstance.data.datasets[0].data[idx];
