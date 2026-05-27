@@ -2,29 +2,234 @@
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>TaxiBook Pro</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0a">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="authScreen">
-        <h1>Παρακαλώ συνδεθείτε</h1>
-        </div>
+    <div class="taxi-strip">
+        <div class="taxi-dot bg-yellow"></div><div class="taxi-dot bg-dark"></div>
+        <div class="taxi-dot bg-yellow"></div><div class="taxi-dot bg-dark"></div>
+        <div class="taxi-dot bg-yellow"></div><div class="taxi-dot bg-dark"></div>
+        <div class="taxi-dot bg-yellow"></div>
+    </div>
 
-    <div id="mainApp" class="hidden">
-        <h1>TaxiBook Dashboard</h1>
+    <header class="max-w-xl">
+        <div>
+            <span style="font-size: 10px; font-weight: 900; color: #404040; letter-spacing: 0.15em; display: block;">TAXIBOOK</span>
+            <h1 id="monthHeaderTitle" style="font-size: 1.25rem; font-weight: 900; color: #eab308; margin: 0;">Μάιος 2026</h1>
+        </div>
+        <div class="flex" style="align-items: center; gap: 8px;">
+            <select id="langSelect" class="select-lang">
+                <option value="el">🇬🇷 EL</option>
+                <option value="en">🇬🇧 EN</option>
+                <option value="de">🇩🇪 DE</option>
+                <option value="tr">🇹🇷 TR</option>
+                <option value="ru">🇷🇺 RU</option>
+                <option value="sq">🇦🇱 SQ</option>
+                <option value="ro">🇷🇴 RO</option>
+            </select>
+        </div>
+    </header>
+
+    <div id="authScreen" class="max-w-md" style="padding: 1rem; margin-top: 2rem;">
+        <form id="authForm" style="background-color: #050505; padding: 1.5rem; border-radius: 1.5rem; border: 1px solid #141414; display: flex; flex-direction: column; gap: 1.25rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+            <h2 id="authTitle" style="font-size: 1.125rem; font-weight: 900; text-align: center; margin: 0;" data-i18n="authTitle">Σύνδεση Οδηγού</h2>
+            <div>
+                <label style="display: block; font-size: 10px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="driverEmail">EMAIL ΟΔΗΓΟΥ</label>
+                <input type="email" id="authEmail" required class="input-field">
+            </div>
+            <div>
+                <label style="display: block; font-size: 10px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="secretCode">ΜΥΣΤΙΚΟΣ ΚΩΔΙΚΟΣ</label>
+                <input type="password" id="authPassword" required class="input-field">
+            </div>
+            <div id="taxiIdFieldWrapper" class="hidden">
+                <label style="display: block; font-size: 10px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="taxiNumLabel">ΑΡΙΘΜΟΣ ΤΑΞΙ (Πινακίδα/Νούμερο)</label>
+                <input type="text" id="authTaxiNumber" placeholder="TAXI 1234" class="input-field">
+            </div>
+            <button type="submit" id="authSubmitBtn" class="btn-primary" data-i18n="loginBtn">Είσοδος</button>
+            <p style="text-align: center; font-size: 0.75rem; color: #525252; margin: 0;">
+                <span id="authToggleText" data-i18n="noAccount">Δεν έχετε λογαριασμό;</span> 
+                <button type="button" id="toggleAuth" style="background: none; border: none; color: #eab308; font-weight: bold; text-decoration: underline; cursor: pointer; padding: 0;" data-i18n="createAccount">Δημιουργία λογαριασμού</button>
+            </p>
+        </form>
+    </div>
+
+    <div id="mainApp" class="hidden max-w-xl" style="padding: 1rem; padding-bottom: 7rem;">
         
-        <div class="yellow-card">
-            <h3>Συνολικά Έσοδα</h3>
-            <div id="dashGross" style="font-size: 2rem; font-weight: bold;">0.00 €</div>
+        <div id="homeTab" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="yellow-card">
+                <span style="font-size: 0.75rem; font-weight: bold; letter-spacing: 0.05em; opacity: 0.85;" data-i18n="netMonth">ΚΑΘΑΡΑ ΜΗΝΑ</span>
+                <div style="font-size: 2.25rem; font-weight: 900; margin: 0.25rem 0 1.25rem 0; letter-spacing: -0.05em;">
+                    <span id="dashNet">0,00</span> <span style="font-size: 1.25rem; font-weight: bold;">€</span>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2">
+                    <div style="background-color: rgba(0,0,0,0.06); padding: 0.6rem; border-radius: 0.75rem;">
+                        <span style="font-size: 9px; font-weight: bold; opacity: 0.6; display: block;" data-i18n="gross">ΜΙΚΤΑ</span>
+                        <span id="dashGross" style="font-size: 0.8rem; font-weight: 900; display: block;">0,00 €</span>
+                    </div>
+                    <div style="background-color: rgba(0,0,0,0.06); padding: 0.6rem; border-radius: 0.75rem;">
+                        <span style="font-size: 9px; font-weight: bold; opacity: 0.6; display: block;" data-i18n="expenses">ΕΞΟΔΑ</span>
+                        <span id="dashExp" style="font-size: 0.8rem; font-weight: 900; display: block;">0,00 €</span>
+                    </div>
+                    <div style="background-color: rgba(0,0,0,0.06); padding: 0.6rem; border-radius: 0.75rem;">
+                        <span style="font-size: 9px; font-weight: bold; opacity: 0.6; display: block;" data-i18n="km">ΧΛΜ</span>
+                        <span id="dashKm" style="font-size: 0.8rem; font-weight: 900; display: block;">0 km</span>
+                    </div>
+                </div>
+                <div id="dashShiftCount" style="margin-top: 1rem; font-size: 0.75rem; font-weight: bold; opacity: 0.85; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 0.6rem;">
+                    0 βάρδιες αυτόν τον μήνα
+                </div>
+            </div>
+
+            <div class="driver-id-card">
+                <div>
+                    <span style="font-size: 8px; color: #525252; font-weight: 900; letter-spacing: 0.05em; display: block;" data-i18n="driverLabel">ΟΔΗΓΟΣ</span>
+                    <span id="idCardDriverName" style="font-size: 0.85rem; font-weight: bold; color: #f5f5f5;">-</span>
+                </div>
+                <div style="text-align: center; border-left: 1px solid #1f1f1f; border-right: 1px solid #1f1f1f; padding: 0 1rem;">
+                    <span style="font-size: 8px; color: #525252; font-weight: 900; letter-spacing: 0.05em; display: block;" data-i18n="driverIdLabel">ΚΩΔΙΚΟΣ</span>
+                    <span id="idCardDriverUid" style="font-size: 0.75rem; font-family: monospace; font-weight: bold; color: #eab308;">-</span>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 8px; color: #525252; font-weight: 900; letter-spacing: 0.05em; display: block;" data-i18n="taxiLabel">ΤΑΞΙ</span>
+                    <span id="idCardTaxiNumber" style="font-size: 0.85rem; font-weight: bold; color: #34d399;">-</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 style="font-size: 0.9rem; font-weight: bold; color: #737373; margin: 0 0 0.75rem 0; padding-left: 4px; text-transform: uppercase;" data-i18n="recentShifts">Πρόσφατες βάρδιες</h3>
+                <div id="recentShiftsList"></div>
+            </div>
         </div>
 
-        <div class="chart-container" style="position: relative; height:300px; width:100%; margin-top: 20px;">
-            <canvas id="analyticsChart"></canvas>
+        <div id="historyTab" class="hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+            <h2 style="font-size: 1.125rem; font-weight: 900; color: #eab308; margin: 0;" data-i18n="historyTitle">Ιστορικό Διαχείρισης</h2>
+            <div class="flex gap-2">
+                <input type="month" id="statsMonth" class="input-field" style="flex: 1;">
+            </div>
+
+            <div class="charts-wrapper">
+                <div class="charts-row-doughnuts">
+                    <div class="chart-box">
+                        <span class="chart-title" data-i18n="earningsAnalysis">ΑΝΑΛΥΣΗ ΕΙΣΠΡΑΞΕΩΝ</span>
+                        <div class="chart-container-rel">
+                            <canvas id="analyticsChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-box">
+                        <span class="chart-title" data-i18n="expensesAnalysis">ΑΝΑΛΥΣΗ ΕΞΟΔΩΝ</span>
+                        <div class="chart-container-rel">
+                            <canvas id="expensesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <span class="chart-title" data-i18n="monthlyTrend">ΕΞΕΛΙΞΗ ΜΗΝΑ (ΜΙΚΤΑ VS ΚΑΘΑΡΑ)</span>
+                    <div class="chart-container-line">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="fullHistoryList"></div>
+        </div>
+
+        <div id="formTab" class="hidden">
+            <div style="background-color: #050505; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #141414; display: flex; flex-direction: column; gap: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #141414; padding-bottom: 0.5rem;">
+                    <h2 id="formHeaderTitle" style="font-size: 0.875rem; font-weight: bold; margin: 0;" data-i18n="newShift">📝 Νέα Βάρδια</h2>
+                    <span id="userDisplay" style="font-size: 10px; color: #eab308; background-color: rgba(234,179,8,0.1); padding: 2px 6px; border-radius: 6px; font-weight: bold; font-family: monospace;"></span>
+                </div>
+                
+                <form id="shiftForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="hidden" id="editingShiftId" value="">
+
+                    <div>
+                        <label style="display: block; font-size: 9px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="formDate">ΗΜΕΡΟΜΗΝΙΑ</label>
+                        <input type="date" id="date" required class="input-field" style="width: 100%;">
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 9px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="taximeterLabel">ΤΑΞΙΜΕΤΡΟ (Z) (€)</label>
+                        <input type="number" step="0.01" id="taximetro" required class="input-field" style="color: #eab308; font-weight: bold;">
+                    </div>
+
+                    <div class="km-container">
+                        <div class="km-col">
+                            <div class="km-label-wrapper">
+                                <label style="font-size: 9px; font-weight: bold; color: #525252;" data-i18n="kmStart">ΕΝΑΡΞΗ ΧΛΜ</label>
+                                <span id="autoKmLbl" class="hidden" style="font-size: 7px; color: #34d399; background: rgba(52,211,153,0.1); padding: 1px 3px; border-radius: 4px; font-weight: bold;" data-i18n="auto">ΑΥΤΟΜΑΤΟ</span>
+                            </div>
+                            <input type="number" id="kmStart" tabindex="-1" required class="input-field">
+                        </div>
+                        <div class="km-col">
+                            <div class="km-label-wrapper">
+                                <label style="font-size: 9px; font-weight: bold; color: #525252;" data-i18n="kmEnd">ΛΗΞΗ ΧΛΜ</label>
+                                <span id="liveKmCalculated" style="font-size: 8px; color: #eab308; font-weight: bold;"></span>
+                            </div>
+                            <input type="number" id="kmEnd" required class="input-field">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <span style="font-size: 10px; font-weight: bold; color: #525252;" data-i18n="breakdown">ΑΝΑΛΥΤΙΚΕΣ ΕΙΣΠΡΑΞΕΙΣ</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" step="0.01" id="metrita" placeholder="💵 ΜΕΤΡΗΤΑ (€)" required class="input-field" style="color: #34d399; font-weight: bold;">
+                            <input type="number" step="0.01" id="kartes" placeholder="💳 POS (€)" class="input-field">
+                            <input type="number" step="0.01" id="freenow" placeholder="📱 FREENOW (€)" class="input-field">
+                            <input type="number" step="0.01" id="uber" placeholder="🚖 UBER (€)" class="input-field">
+                        </div>
+                        <input type="number" step="0.01" id="tips" placeholder="🎁 ΦΙΛΟΔΩΡΗΜΑΤΑ (Tips) (€)" class="input-field" style="color: #34d399;">
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid #141414; padding-top: 0.75rem;">
+                        <span style="font-size: 10px; font-weight: bold; color: #525252;" data-i18n="operatingExpenses">ΛΕΙΤΟΥΡΓΙΚΑ ΕΞΟΔΑ</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" step="0.01" id="kausima" placeholder="⛽ Καύσια (€)" class="input-field">
+                            <input type="number" step="0.01" id="service" placeholder="🔧 Service (€)" class="input-field">
+                            <input type="number" step="0.01" id="plysimo" placeholder="🧼 Καθαρισμός (€)" class="input-field">
+                            <input type="number" step="0.01" id="allaExoda" placeholder="🎟️ Διόδια / Λοιπά (€)" class="input-field">
+                        </div>
+                    </div>
+
+                    <input type="text" id="notes" placeholder="Σημειώσεις βάρδιας..." class="input-field">
+
+                    <button type="submit" id="saveShiftBtn" class="btn-primary" data-i18n="saveShift">Καταχώρηση Βάρδιας</button>
+                    <button type="button" id="cancelEditBtn" class="hidden input-field" style="background-color: #121212; font-weight: bold; text-align: center; border-color: #1f1f1f; color: #737373;" data-i18n="cancel">Ακύρωση</button>
+                </form>
+            </div>
         </div>
     </div>
+
+    <nav id="bottomNav" class="hidden">
+        <button id="showHomeBtn" class="nav-btn active">
+            <svg viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/></svg>
+            <span style="font-size: 9px; letter-spacing: 0.05em;" data-i18n="navHome">ΑΡΧΙΚΗ</span>
+        </button>
+        
+        <button id="floatingAddBtn" class="floating-btn">+</button>
+        
+        <button id="showHistoryBtn" class="nav-btn">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/></svg>
+            <span style="font-size: 9px; letter-spacing: 0.05em;" data-i18n="navHistory">ΙΣΤΟΡΙΚΟ</span>
+        </button>
+
+        <button id="navLogoutBtn" class="nav-btn nav-btn-logout">
+            <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 0 1 2 2v2h-2V4H4v16h10v-2h2v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10z"/></svg>
+            <span style="font-size: 9px; letter-spacing: 0.05em;" data-i18n="logout">ΕΞΟΔΟΣ</span>
+        </button>
+    </nav>
 
     <script type="module" src="js/main.js"></script>
 </body>
