@@ -57,7 +57,7 @@
         .input-field:focus { border-color: #eab308; }
 
         .btn-primary { width: 100%; background-color: #eab308; color: #0a0a0a; font-weight: 900; padding: 0.875rem; border: none; border-radius: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; }
-        .btn-secondary { background-color: #121212; border: 1px solid #1f1f1f; color: #eab308; font-weight: bold; padding: 0.75rem; border-radius: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.815rem; }
+        .btn-secondary { background-color: #121212; border: 1px solid #1f1f1f; color: #eab308; font-weight: bold; padding: 0.6rem 0.75rem; border-radius: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.815rem; justify-content: center; }
         .select-lang { background-color: #121212; border: 1px solid #1f1f1f; color: #d4d4d4; font-size: 0.75rem; padding: 0.5rem; border-radius: 0.75rem; font-weight: bold; outline: none; }
 
         nav { background-color: rgba(5, 5, 5, 0.98); border-top: 1px solid #141414; position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; align-items: center; height: 4.25rem; padding-bottom: env(safe-area-inset-bottom); z-index: 50; box-shadow: 0 -10px 15px -3px rgba(0,0,0,0.5); transition: transform 0.2s ease-in-out; }
@@ -200,9 +200,14 @@
         <div id="historyTab" class="hidden" style="display: flex; flex-direction: column; gap: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                 <h2 style="font-size: 1.125rem; font-weight: 900; color: #eab308; margin: 0;" data-i18n="historyTitle">Ιστορικό Διαχείρισης</h2>
-                <button id="exportCsvBtn" class="btn-secondary">
-                    <span>📥</span> <span data-i18n="exportCsv">Αρχείο Λογιστή (CSV)</span>
-                </button>
+                <div class="flex flex-col gap-1-5">
+                    <button id="exportCsvBtn" class="btn-secondary">
+                        <span>📥</span> <span data-i18n="exportCsv">Αρχείο Λογιστή (CSV)</span>
+                    </button>
+                    <button id="exportPdfBtn" class="btn-secondary">
+                        <span>📄</span> <span data-i18n="exportPdf">Αρχείο Λογιστή (PDF)</span>
+                    </button>
+                </div>
             </div>
             
             <div class="flex gap-2">
@@ -353,7 +358,7 @@
                 cash: "Μετρητά", cards: "POS", free: "FreeNow", earningsAnalysis: "ΑΝΑΛΥΣΗ ΕΙΣΠΡΑΞΕΩΝ", expensesAnalysis: "ΑΝΑΛΥΣΗ ΕΞΟΔΩΝ",
                 monthlyTrend: "ΕΞΕΛΙΞΗ ΜΗΝΑ (ΜΙΚΤΑ VS ΚΑΘΑΡΑ)", driverLabel: "ΟΔΗΓΟΣ", driverIdLabel: "ΚΩΔΙΚΟΣ", taxiLabel: "ΤΑΞΙ", taxiNumLabel: "ΑΡΙΘΜΟΣ ΤΑΞΙ",
                 fuel: "Καύσια", service: "Service", wash: "Καθαρισμός", otherExp: "Λοιπά", grossLabel: "Μικτά", netLabel: "Καθαρά",
-                timeStart: "ΕΝΑΡΞΗ", timeEnd: "ΛΗΞΗ", exportCsv: "Αρχείο Λογιστή (CSV)", hourlyRate: "Ωριαία", shiftHours: "Ώρες",
+                timeStart: "ΕΝΑΡΞΗ", timeEnd: "ΛΗΞΗ", exportCsv: "Αρχείο Λογιστή (CSV)", exportPdf: "Αρχείο Λογιστή (PDF)", hourlyRate: "Ωριαία", shiftHours: "Ώρες",
                 months: ["Ιανουάριος", "Φεβρουάριος", "Μάρτιος", "Απρίλιος", "Μάιος", "Ιούνιος", "Ιούλιος", "Αύγουστος", "Σεπτέμβριος", "Οκτώβριος", "Νοέμβριος", "Δεκέμβριος"]
             },
             en: {
@@ -368,7 +373,7 @@
                 cash: "Cash", cards: "POS", free: "FreeNow", earningsAnalysis: "EARNINGS ANALYSIS", expensesAnalysis: "EXPENSES ANALYSIS",
                 monthlyTrend: "MONTHLY TREND (GROSS VS NET)", driverLabel: "DRIVER", driverIdLabel: "DRIVER ID", taxiLabel: "TAXI", taxiNumLabel: "TAXI NUMBER",
                 fuel: "Fuel", service: "Service", wash: "Wash", otherExp: "Other", grossLabel: "Gross", netLabel: "Net",
-                timeStart: "START", timeEnd: "END", exportCsv: "Accountant CSV", hourlyRate: "Hourly", shiftHours: "Hours",
+                timeStart: "START", timeEnd: "END", exportCsv: "Accountant CSV", exportPdf: "Accountant PDF", hourlyRate: "Hourly", shiftHours: "Hours",
                 months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             }
         };
@@ -612,7 +617,7 @@
             if(filtered.length === 0) { alert("Δεν υπάρχουν δεδομένα για αυτόν τον μήνα."); return; }
 
             let csv = "\uFEFF"; 
-            csv += "Ημερομηνία;Έναρξη;Λήξη;Ώρες;Ταξίμετρο (Ζ);Μικτά;Έξοδα;Καθαρά;Μετρητά;POS;FreeNow;Uber;Tips;Καύσιμα;Service;Καθαρισμός;Λοιπά;Σημειώσεις\n";
+            csv += "Ημερομηνία;Έναρξη;Λήξη;Ώρες;Ταξίμετρο (Ζ);Μικτά;Έξοδα;Καθαρά;Μετρητά;POS;FreeNow;Uber;Tips;Καύσια;Service;Καθαρισμός;Λοιπά;Σημειώσεις\n";
             
             filtered.forEach(s => {
                 csv += `${s.date};${s.startTime || ''};${s.endTime || ''};${(s.durationHours || 0).toFixed(2)};${s.taximetro};${s.synolikesEispraxeis};${s.totalExpenses};${s.katharoKerdos};${s.metrita};${s.kartes};${s.freenow};${s.uber || 0};${s.tips};${s.kausima};${s.service};${s.plysimo};${s.allaExoda};${s.notes || ''}\n`;
@@ -625,6 +630,137 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        });
+
+        document.getElementById('exportPdfBtn').addEventListener('click', function() {
+            const selectedMonth = document.getElementById('statsMonth').value;
+            if(!selectedMonth) return;
+            
+            const filtered = allShiftsGlobal.filter(s => s.date.startsWith(selectedMonth));
+            if(filtered.length === 0) { 
+                alert("Δεν υπάρχουν δεδομένα για αυτόν τον μήνα."); 
+                return; 
+            }
+
+            const t = translations[currentLang] || translations['el'];
+            const parts = selectedMonth.split('-');
+            const monthName = t.months ? t.months[parseInt(parts[1])-1] : selectedMonth;
+            const driverName = document.getElementById('idCardDriverName').textContent;
+
+            let printWindow = window.open('', '_blank');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>TaxiBook Report - ${monthName} ${parts[0]}</title>
+                    <style>
+                        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a; padding: 30px; font-size: 12px; line-height: 1.5; }
+                        .header-table { width: 100%; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
+                        .brand { font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #000; }
+                        .report-title { font-size: 16px; font-weight: bold; text-align: right; text-transform: uppercase; }
+                        .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 30px; background: #f9f9f9; padding: 12px; border-radius: 6px; border: 1px solid #eee; }
+                        .meta-item strong { display: block; font-size: 10px; color: #666; text-transform: uppercase; }
+                        .meta-item span { font-size: 13px; font-weight: bold; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        th, td { border: 1px solid #e0e0e0; padding: 8px 6px; text-align: center; }
+                        th { background-color: #f5f5f5; font-weight: bold; font-size: 10px; text-transform: uppercase; color: #333; }
+                        .text-left { text-align: left; }
+                        .text-right { text-align: right; }
+                        .total-row { font-weight: bold; background-color: #fcf8e3; border-top: 2px solid #000; border-bottom: 2px solid #000; }
+                        .total-row td { font-size: 12px; }
+                        @media print { 
+                            body { padding: 0; }
+                            @page { margin: 1.5cm; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <table class="header-table">
+                        <tr>
+                            <td class="brand" style="border:none; text-align:left;">TAXIBOOK PRO</td>
+                            <td class="report-title" style="border:none; text-align:right;">Μηνιαία Αναφορά Εσόδων - Εξόδων</td>
+                        </tr>
+                    </table>
+
+                    <div class="meta-grid">
+                        <div class="meta-item"><strong>Μήνας Εκκαθάρισης</strong><span>${monthName} ${parts[0]}</span></div>
+                        <div class="meta-item"><strong>Οδηγός</strong><span>${driverName}</span></div>
+                        <div class="meta-item"><strong>Όχημα / Ταξί</strong><span>${userTaxiNumber}</span></div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ημ/νία</th>
+                                <th>Βάρδια</th>
+                                <th>Ώρες</th>
+                                <th>Χλμ</th>
+                                <th>Ταξίμετρο (Ζ)</th>
+                                <th>Μικτά (€)</th>
+                                <th>Έξοδα (€)</th>
+                                <th>Καθαρά (€)</th>
+                                <th class="text-left" style="width: 20%;">Σημειώσεις</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `);
+
+            let totalHours = 0, totalKm = 0, totalZ = 0, totalGross = 0, totalExp = 0, totalNet = 0;
+            const sortedActive = [...filtered].reverse();
+
+            sortedActive.forEach(s => {
+                let dParts = s.date.split('-');
+                let dateDisplay = `${dParts[2]}/${dParts[1]}/${dParts[0]}`;
+                let hrs = s.durationHours || 0;
+                
+                totalHours += hrs;
+                totalKm += s.totalKm || 0;
+                totalZ += s.taximetro || 0;
+                totalGross += s.synolikesEispraxeis || 0;
+                totalExp += s.totalExpenses || 0;
+                totalNet += s.katharoKerdos || 0;
+
+                printWindow.document.write(`
+                    <tr>
+                        <td>${dateDisplay}</td>
+                        <td>${s.startTime || ''} - ${s.endTime || ''}</td>
+                        <td>${hrs.toFixed(1)}h</td>
+                        <td>${s.totalKm || 0}</td>
+                        <td>${(s.taximetro || 0).toFixed(2)}</td>
+                        <td>${(s.synolikesEispraxeis || 0).toFixed(2)}</td>
+                        <td>${(s.totalExpenses || 0).toFixed(2)}</td>
+                        <td style="font-weight:bold;">${(s.katharoKerdos || 0).toFixed(2)}</td>
+                        <td class="text-left">${s.notes || ''}</td>
+                    </tr>
+                `);
+            });
+
+            printWindow.document.write(`
+                            <tr class="total-row">
+                                <td colspan="2">ΣΥΝΟΛΙΚΑ ΜΗΝΑ</td>
+                                <td>${totalHours.toFixed(1)}h</td>
+                                <td>${totalKm}</td>
+                                <td>${totalZ.toFixed(2)}</td>
+                                <td>${totalGross.toFixed(2)}</td>
+                                <td>${totalExp.toFixed(2)}</td>
+                                <td style="color: #b45309;">${totalNet.toFixed(2)} €</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(function() { window.close(); }, 500);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
         });
 
         function resetFormState() {
