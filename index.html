@@ -450,10 +450,10 @@
                 loginHere: "Buradan giriş yapın", createTitle: "Hesap Oluştur", netMonth: "AYLIK NET", gross: "BRÜT",
                 expenses: "GİDERLER", km: "KM", recentShifts: "Son Vardiyalar", historyTitle: "Yönetim Geç密i",
                 newShift: "📝 Yeni Vardiya", formDate: "TARİH", taximeterLabel: "TAKSMETRE (Z) (€)", kmStart: "BAŞLANGIÇ KM", 
-                kmEnd: "BİTİŞ KM", auto: "OTOMATİK", breakdown: "DETAYLI GELİRLER (GÜN SONU)", operatingExpenses: "İŞLETME GİDERLERİ",
+                kmEnd: "BİTİŞ KM", auto: "OTOMATİK", breakdown: "DETAYLI GELİRLER (GÜN SONU)", operatingExpenses: "İŞLETME GİDERLERI",
                 saveShift: "Vardiyayı Kaydet", save: "Kaydet", cancel: "İptal", navHome: "ANA SAYFA", navHistory: "GEÇMİŞ",
                 editBtn: "Düzenle", shiftCountText: "bu ayki vardiya sayısı", editShiftTitle: "Vardiyayı Düzenle",
-                cash: "Nakit", cards: "POS", free: "FreeNow", earningsAnalysis: "GELİR ANALİZI", expensesAnalysis: "GİDER ANALİZİ",
+                cash: "Nakit", cards: "POS", free: "FreeNow", earningsAnalysis: "GELİR ANALİZI", expensesAnalysis: "GİDER ANALİZI",
                 monthlyTrend: "AYLIK TREND (BRÜT VS NET)", driverLabel: "SÜRÜCÜ", driverIdLabel: "KOD", taxiLabel: "TAKSİ", taxiNumLabel: "TAKSİ NUMARASI (Plaka/No)",
                 fuel: "YAKIT", service: "Servis", wash: "Temizlik", otherExp: "Diğer", grossLabel: "Brüt", netLabel: "Net",
                 sourcesComparison: "GELİR KAYNAKLARI KARŞILAŠTIRMASI (€)", totalTipsLabel: "Toplam Bahşiş",
@@ -521,7 +521,7 @@
         const floatingAddBtn = document.getElementById('floatingAddBtn');
         const navLogoutBtn = document.getElementById('navLogoutBtn');
 
-        // --- ΧΕΙΡΙΣΜΟΣ ΚΟΥΜΠΙΟΥ ΣΥΝΔΕΣΗΣ BLUETOOTH (IMPORT LOGIC) ---
+        // --- ΧΕΙΡΙΣΜΟΣ ΚΟΥΜΠΙΟΥ ΣΥΝΔΕΣΗΣ BLUETOOTH (ΑΦΑΛΗΣ ΕΚΔΟΣΗ) ---
         async function handleBluetoothConnection() {
             const brand = document.getElementById('taximeterBrand').value;
             const btn = document.getElementById('btnConnectTaximeter');
@@ -540,7 +540,10 @@
                     btn.style.color = "#34d399";
                     btn.style.borderColor = "#34d399";
                     
-                    updateTipsLive();
+                    // Ασφαλής έλεγχος για να μην κρασάρει η JavaScript
+                    if (typeof updateTipsLive === "function") {
+                        updateTipsLive();
+                    }
                     alert(`Το ποσό λήφθηκε αυτόματα: ${finalPrice.toFixed(2)} €`);
                 }
             } catch (error) {
