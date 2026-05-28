@@ -102,7 +102,6 @@
         
         canvas { max-width: 100%; max-height: 100%; }
 
-        /* Modal Styles για την Ανάλυση Γραφημάτων */
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); align-items: center; justify-content: center; padding: 1rem; }
         .modal-content { background-color: #050505; border: 1px solid #1f1f1f; border-radius: 1.5rem; max-width: 500px; width: 100%; padding: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; }
         .close-modal { position: absolute; top: 1rem; right: 1.25rem; color: #737373; font-size: 1.5rem; font-weight: bold; cursor: pointer; }
@@ -260,6 +259,21 @@
                     <span id="userDisplay" style="font-size: 10px; color: #eab308; background-color: rgba(234,179,8,0.1); padding: 2px 6px; border-radius: 6px; font-weight: bold; font-family: monospace;"></span>
                 </div>
                 
+                <div class="app-card" style="border-color: #262626; background: #0c0c0c; margin-bottom: 0.25rem;">
+                    <span style="font-size: 9px; font-weight: bold; color: #a3a3a3; display: block; margin-bottom: 6px;">⚙️ ΑΥΤΟΜΑΤΗ ΛΗΨΗ ΤΑΞΙΜΕΤΡΟΥ</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="taximeterBrand" class="input-field" style="padding: 0.5rem; font-size: 0.8rem;">
+                            <option value="generic">Generic / Δοκιμαστικό BLE</option>
+                            <option value="semitron">Semitron (P6B / P6S)</option>
+                            <option value="ics">ICS / Custom Profile</option>
+                            <option value="digitax">Digitax F1</option>
+                        </select>
+                        <button type="button" id="btnConnectTaximeter" class="btn-primary" style="background-color: #262626; color: #eab308; border: 1px solid #eab308; font-size: 11px; padding: 0.5rem;">
+                            🔵 Σύνδεση BLE
+                        </button>
+                    </div>
+                </div>
+
                 <form id="shiftForm" style="display: flex; flex-direction: column; gap: 1rem;">
                     <input type="hidden" id="editingShiftId" value="">
 
@@ -351,6 +365,9 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, doc, updateDoc, query, where, getDocs, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        // ΕΙΣΑΓΩΓΗ ΤΗΣ ΕΞΩΤΕΡΙΚΗΣ ΣΥΝΑΡΤΗΣΗΣ BLUETOOTH
+        import { connectAndReadTaximeter } from './bluetooth-taximetro.js';
 
         const firebaseConfig = {
           apiKey: "AIzaSyBxIswpC499LRIriixb4x-A45RISwUoBeY",
@@ -371,13 +388,11 @@
         let isLoginMode = true;
         let currentLang = 'el';
         
-        // Instances για τα γραφήματα
         let statsChartInstance = null;
         let expensesChartInstance = null;
         let trendChartInstance = null;
         let sourceBarChartInstance = null;
 
-        // Παγκόσμιες μεταβλητές στατιστικών για το Modal
         let cacheStats = { tCash:0, tCards:0, tFree:0, tUber:0, tFuel:0, tService:0, tWash:0, tOtherExp:0, monthGross:0, monthExp:0, monthNet:0, monthKm:0, totalTips:0, shiftCount:0 };
 
         const translations = {
@@ -415,7 +430,7 @@
             },
             de: {
                 logout: "Abmelden", authTitle: "Fahrer-Login", driverEmail: "FAHRER-EMAIL", secretCode: "GEHEIMCODE",
-                loginBtn: "Einloggen", registerBtn: "Registrieren", noAccount: "Kein Konto?", createAccount: "Konto erstellen",
+                loginBtn: "Einloggen", registerBtn: "Registrieren", noAccount: "Keν Konto?", createAccount: "Konto erstellen",
                 loginHere: "Hier einloggen", createTitle: "Konto Erstellen", netMonth: "MONATSNETTO", gross: "BRUTTO",
                 expenses: "AUSGABEN", km: "KM", recentShifts: "Aktuelle Schichten", historyTitle: "Verwaltungshistorie",
                 newShift: "📝 Neue Schicht", formDate: "DATUM", taximeterLabel: "TAXAMETER (Z) (€)", kmStart: "START KM", 
@@ -433,15 +448,15 @@
                 logout: "Çıkış", authTitle: "Sürücü Girişi", driverEmail: "SÜRÜCÜ E-POSTASI", secretCode: "GİZLİ ŞİFRE",
                 loginBtn: "Giriş Yap", registerBtn: "Kayıt Ol", noAccount: "Hesabınız yok mu?", createAccount: "Hesap oluştur",
                 loginHere: "Buradan giriş yapın", createTitle: "Hesap Oluştur", netMonth: "AYLIK NET", gross: "BRÜT",
-                expenses: "GİDERLER", km: "KM", recentShifts: "Son Vardiyalar", historyTitle: "Yönetim Geçmişi",
+                expenses: "GİDERLER", km: "KM", recentShifts: "Son Vardiyalar", historyTitle: "Yönetim Geç密i",
                 newShift: "📝 Yeni Vardiya", formDate: "TARİH", taximeterLabel: "TAKSMETRE (Z) (€)", kmStart: "BAŞLANGIÇ KM", 
                 kmEnd: "BİTİŞ KM", auto: "OTOMATİK", breakdown: "DETAYLI GELİRLER (GÜN SONU)", operatingExpenses: "İŞLETME GİDERLERİ",
                 saveShift: "Vardiyayı Kaydet", save: "Kaydet", cancel: "İptal", navHome: "ANA SAYFA", navHistory: "GEÇMİŞ",
                 editBtn: "Düzenle", shiftCountText: "bu ayki vardiya sayısı", editShiftTitle: "Vardiyayı Düzenle",
-                cash: "Nakit", cards: "POS", free: "FreeNow", earningsAnalysis: "GELİR ANALİZİ", expensesAnalysis: "GİDER ANALİZİ",
+                cash: "Nakit", cards: "POS", free: "FreeNow", earningsAnalysis: "GELİR ANALİZI", expensesAnalysis: "GİDER ANALİZİ",
                 monthlyTrend: "AYLIK TREND (BRÜT VS NET)", driverLabel: "SÜRÜCÜ", driverIdLabel: "KOD", taxiLabel: "TAKSİ", taxiNumLabel: "TAKSİ NUMARASI (Plaka/No)",
                 fuel: "YAKIT", service: "Servis", wash: "Temizlik", otherExp: "Diğer", grossLabel: "Brüt", netLabel: "Net",
-                sourcesComparison: "GELİR KAYNAKLARI KARŞILAŞTIRMASI (€)", totalTipsLabel: "Toplam Bahşiş",
+                sourcesComparison: "GELİR KAYNAKLARI KARŞILAŠTIRMASI (€)", totalTipsLabel: "Toplam Bahşiş",
                 phCash: "💵 NAKİT (€)", phNotes: "Vardiya notları...",
                 months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
             },
@@ -487,7 +502,7 @@
                 saveShift: "Zavedi Smenu", save: "Sačuvaj", cancel: "Otkaži", navHome: "POČETNA", navHistory: "ISTORIJA",
                 editBtn: "Izmeni", shiftCountText: "smena ovaj mesec", editShiftTitle: "Izmeni Smenu",
                 cash: "Gotovina", cards: "POS", free: "FreeNow", earningsAnalysis: "ANALIZA ZARADE", expensesAnalysis: "ANALIZA TROŠKOVA",
-                monthlyTrend: "MESEČNI TREND (BRUTO VS NETO)", driverLabel: "VOZAČ", driverIdLabel: "KOD", taxiLabel: "TAKSI", taxiNumLabel: "BROJ TAKSIJA (Tablica/ID)",
+                monthlyTrend: "MESEČNI TREND (BRUTO VS NETO)", driverLabel: "VOZAČ", driverIdLabel: "KOD", taxiLabel: "TAXI", taxiNumLabel: "BROJ TAKSIJA (Tablica/ID)",
                 fuel: "Gorivo", service: "Servis", wash: "Pranje", otherExp: "Ostalo", grossLabel: "Bruto", netLabel: "Neto",
                 sourcesComparison: "POREĐENJE IZVORA PRIHODA (€)", totalTipsLabel: "Ukupno Bakšiš",
                 phCash: "💵 GOTOVINA (€)", phNotes: "Beleške o smeni...",
@@ -505,6 +520,41 @@
         const showHistoryBtn = document.getElementById('showHistoryBtn');
         const floatingAddBtn = document.getElementById('floatingAddBtn');
         const navLogoutBtn = document.getElementById('navLogoutBtn');
+
+        // --- ΧΕΙΡΙΣΜΟΣ ΚΟΥΜΠΙΟΥ ΣΥΝΔΕΣΗΣ BLUETOOTH (IMPORT LOGIC) ---
+        async function handleBluetoothConnection() {
+            const brand = document.getElementById('taximeterBrand').value;
+            const btn = document.getElementById('btnConnectTaximeter');
+            
+            try {
+                btn.textContent = "⏳ Αναζήτηση...";
+                btn.style.borderColor = "#eab308";
+                btn.style.color = "#eab308";
+
+                // Κλήση της συνάρτησης από το bluetooth-taximetro.js
+                const finalPrice = await connectAndReadTaximeter(brand);
+
+                if (!isNaN(finalPrice) && finalPrice > 0) {
+                    document.getElementById('taximetro').value = finalPrice.toFixed(2);
+                    btn.textContent = "🟢 Επιτυχία";
+                    btn.style.color = "#34d399";
+                    btn.style.borderColor = "#34d399";
+                    
+                    updateTipsLive();
+                    alert(`Το ποσό λήφθηκε αυτόματα: ${finalPrice.toFixed(2)} €`);
+                }
+            } catch (error) {
+                console.error(error);
+                btn.textContent = "🔴 Αποτυχία";
+                btn.style.color = "#ef4444";
+                btn.style.borderColor = "#ef4444";
+                
+                if (error.name !== 'NotFoundError') {
+                    alert("Σφάλμα Bluetooth: " + error.message);
+                }
+            }
+        }
+        document.getElementById('btnConnectTaximeter').addEventListener('click', handleBluetoothConnection);
 
         // --- KEYBOARD ENGINE ---
         function initKeyboardEngine() {
@@ -755,6 +805,12 @@
                 document.getElementById('kmStart').value = allShiftsGlobal[0].kmEnd;
                 document.getElementById('autoKmLbl').classList.remove('hidden');
             }
+            
+            // Επαναφορά του Bluetooth Button στην αρχική του κατάσταση
+            const btn = document.getElementById('btnConnectTaximeter');
+            btn.textContent = "🔵 Σύνδεση BLE";
+            btn.style.color = "#eab308";
+            btn.style.borderColor = "#eab308";
         }
 
         window.startEditShift = function(id) {
@@ -884,73 +940,72 @@
             renderTrendChart(trendLabels, trendGrossData, trendNetData);
         }
 
-        // --- ΓΡΑΦΗΜΑ 1: BAR CHART ---
+        // --- CHART FUNCTIONS ---
         function renderSourceBarChart(cash, cards, freenow, uber) {
-            const canvas = document.getElementById('sourceBarChart');
-            if(!canvas) return;
+            const canvas = document.getElementById('sourceBarChart'); if(!canvas) return;
             if (sourceBarChartInstance) sourceBarChartInstance.destroy();
-
             sourceBarChartInstance = new Chart(canvas.getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: currentLang === 'el' ? ['Μετρητά', 'POS (Κάρτες)', 'FREE NOW', 'Uber'] : ['Cash', 'POS (Cards)', 'FREE NOW', 'Uber'],
-                    datasets: [{
-                        data: [cash, cards, freenow, uber],
-                        backgroundColor: ['#34d399', '#eab308', '#d97706', '#60a5fa'],
-                        borderRadius: 8,
-                        borderWidth: 0
-                    }]
+                    datasets: [{ data: [cash, cards, freenow, uber], backgroundColor: ['#34d399', '#eab308', '#d97706', '#60a5fa'], borderRadius: 8, borderWidth: 0 }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { color: '#737373', font: { size: 10 } } },
-                        y: { grid: { color: '#141414' }, ticks: { color: '#737373', font: { size: 9 } } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#737373', font: { size: 10 } } }, y: { grid: { color: '#141414' }, ticks: { color: '#737373', font: { size: 9 } } } } }
             });
         }
 
-        // --- ΓΡΑΦΗΜΑ 2: DOUGHNUT ΕΙΣΠΡΑΞΕΩΝ ---
         function renderAnalyticsChart(cash, cards, freenow, uber) {
             const canvas = document.getElementById('analyticsChart'); if(!canvas) return;
             if (statsChartInstance) statsChartInstance.destroy();
             const total = cash + cards + freenow + uber;
-
             statsChartInstance = new Chart(canvas.getContext('2d'), {
                 type: 'doughnut',
-                data: {
-                    labels: ['Cash', 'POS', 'FREE', 'Uber'],
-                    datasets: [{ data: total === 0 ? [1] : [cash, cards, freenow, uber], backgroundColor: total === 0 ? ['#1f1f1f'] : ['#34d399', '#eab308', '#d97706', '#60a5fa'], borderWidth: 0 }]
-                },
+                data: { labels: ['Cash', 'POS', 'FREE', 'Uber'], datasets: [{ data: total === 0 ? [1] : [cash, cards, freenow, uber], backgroundColor: total === 0 ? ['#1f1f1f'] : ['#34d399', '#eab308', '#d97706', '#60a5fa'], borderWidth: 0 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
             });
         }
 
-        // --- ΓΡΑΦΗΜΑ 3: DOUGHNUT ΕΞΟΔΩΝ ---
+        document.getElementById('metrita').addEventListener('input', updateTipsLive);
+        document.getElementById('kartes').addEventListener('input', updateTipsLive);
+        document.getElementById('freenow').addEventListener('input', updateTipsLive);
+        document.getElementById('uber').addEventListener('input', updateTipsLive);
+        document.getElementById('taximetro').addEventListener('input', updateTipsLive);
+
+        function updateTipsLive() {
+            const taximetro = parseFloat(document.getElementById('taximetro').value) || 0;
+            const metrita = parseFloat(document.getElementById('metrita').value) || 0;
+            const kartes = parseFloat(document.getElementById('kartes').value) || 0;
+            const freenow = parseFloat(document.getElementById('freenow').value) || 0;
+            const uber = parseFloat(document.getElementById('uber').value) || 0;
+
+            const totalReal = metrita + kartes + freenow + uber;
+            const calculatedTips = totalReal > taximetro ? (totalReal - taximetro) : 0;
+            
+            const tipsInput = document.getElementById('tips');
+            if (calculatedTips > 0) {
+                tipsInput.value = `🎁 TIPS: +${calculatedTips.toFixed(2)} €`;
+                tipsInput.style.color = "#eab308";
+            } else {
+                tipsInput.value = "🎁 Tips: 0.00 €";
+                tipsInput.style.color = "#737373";
+            }
+        }
+
         function renderExpensesChart(fuel, service, wash, other) {
             const canvas = document.getElementById('expensesChart'); if(!canvas) return;
             if (expensesChartInstance) expensesChartInstance.destroy();
             const total = fuel + service + wash + other;
-
             expensesChartInstance = new Chart(canvas.getContext('2d'), {
                 type: 'doughnut',
-                data: {
-                    labels: currentLang === 'el' ? ['Καύσιμα', 'Service', 'Καθαρισμός', 'Λοιπά'] : ['Fuel', 'Service', 'Wash', 'Other'],
-                    datasets: [{ data: total === 0 ? [1] : [fuel, service, wash, other], backgroundColor: total === 0 ? ['#1f1f1f'] : ['#ef4444', '#f97316', '#06b6d4', '#737373'], borderWidth: 0 }]
-                },
+                data: { labels: currentLang === 'el' ? ['Καύσιμα', 'Service', 'Καθαρισμός', 'Λοιπά'] : ['Fuel', 'Service', 'Wash', 'Other'], datasets: [{ data: total === 0 ? [1] : [fuel, service, wash, other], backgroundColor: total === 0 ? ['#1f1f1f'] : ['#ef4444', '#f97316', '#06b6d4', '#737373'], borderWidth: 0 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
             });
         }
 
-        // --- ΓΡΑΦΗΜΑ 4: LINE CHART ΤΑΣΗΣ ---
         function renderTrendChart(labels, grossData, netData) {
             const canvas = document.getElementById('trendChart'); if(!canvas) return;
             if (trendChartInstance) trendChartInstance.destroy();
             const t = translations[currentLang] || translations['el'];
-
             trendChartInstance = new Chart(canvas.getContext('2d'), {
                 type: 'line',
                 data: {
@@ -960,24 +1015,15 @@
                         { label: t.netLabel || 'Net', data: netData.length === 0 ? [0] : netData, borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)', borderWidth: 2, tension: 0.3, fill: true }
                     ]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: true, labels: { color: '#737373', font: { size: 9 } } } },
-                    scales: {
-                        x: { grid: { color: '#141414' }, ticks: { color: '#525252', font: { size: 9 } } },
-                        y: { grid: { color: '#141414' }, ticks: { color: '#525252', font: { size: 9 } } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, labels: { color: '#737373', font: { size: 9 } } } }, scales: { x: { grid: { color: '#141414' }, ticks: { color: '#525252', font: { size: 9 } } }, y: { grid: { color: '#141414' }, ticks: { color: '#525252', font: { size: 9 } } } } }
             });
         }
 
-        // --- ΔΙΑΔΡΑΣΤΙΚΟ MODAL ΑΝΑΛΥΣΗΣ ---
+        // --- INTERACTIVE ANALYTICS MODAL ---
         window.openAnalysisModal = function(chartType) {
             const modal = document.getElementById('analysisModal');
             const titleEl = document.getElementById('modalTitleText');
             const contentEl = document.getElementById('modalAnalysisContent');
-            
             let html = "";
             const totalIncomes = cacheStats.tCash + cacheStats.tCards + cacheStats.tFree + cacheStats.tUber;
             const totalExpenses = cacheStats.tFuel + cacheStats.tService + cacheStats.tWash + cacheStats.tOtherExp;
@@ -999,7 +1045,7 @@
                     <div class="analysis-item"><span class="analysis-label">🔧 Service / ${currentLang==='el'?'Βλάβες':'Repairs'}:</span><span class="analysis-value">${cacheStats.tService.toFixed(2)} €</span></div>
                     <div class="analysis-item"><span class="analysis-label">🧼 ${currentLang==='el'?'Καθαρισμός (Πλύσιμο)':'Cleaning (Wash)'}:</span><span class="analysis-value">${cacheStats.tWash.toFixed(2)} €</span></div>
                     <div class="analysis-item"><span class="analysis-label">🎟️ ${currentLang==='el'?'Διόδια & Λοιπά Έξοδα':'Tolls & Other Expenses'}:</span><span class="analysis-value">${cacheStats.tOtherExp.toFixed(2)} €</span></div>
-                    <div class="analysis-item" style="border-top: 1px dashed #262626; margin-top: 8px;"><span class="analysis-label" style="color:#ef4444;">📉 ${currentLang==='el'?'Σύνολο Εξόδων Μήνα':'Total Monthly Expenses'}:</span><span class="analysis-value" style="color:#ef4444;">${totalExpenses.toFixed(2)} €</span></div>
+                    <div class="analysis-item" style="border-top: 1px dashed #262626; margin-top: 8px;"><span class="analysis-label" style="color:#ef4444;">📉 ${currentLang==='el'?'Σύνολο Εξόδων Μήνα':'Total Expenses'}:</span><span class="analysis-value" style="color:#ef4444;">${totalExpenses.toFixed(2)} €</span></div>
                 `;
             } else if (chartType === 'trendLine') {
                 titleEl.textContent = currentLang === 'el' ? "Οικονομική Απόδοση Μήνα" : "Monthly Financial Performance";
@@ -1010,19 +1056,11 @@
                     <div class="analysis-item" style="border-top: 1px dashed #262626; margin-top: 8px;"><span class="analysis-label" style="color:#34d399;">🏁 ${currentLang==='el'?'Πραγματικά Καθαρά Κέρδη':'Actual Net Profit'}:</span><span class="analysis-value" style="color:#34d399; font-size:1.1rem;">${cacheStats.monthNet.toFixed(2)} €</span></div>
                 `;
             }
-
-            contentEl.innerHTML = html;
-            modal.style.display = "flex";
+            contentEl.innerHTML = html; modal.style.display = "flex";
         };
 
-        window.closeAnalysisModal = function() {
-            document.getElementById('analysisModal').style.display = "none";
-        };
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('analysisModal');
-            if (event.target == modal) { modal.style.display = "none"; }
-        };
+        window.closeAnalysisModal = function() { document.getElementById('analysisModal').style.display = "none"; };
+        window.onclick = function(event) { const modal = document.getElementById('analysisModal'); if (event.target == modal) { modal.style.display = "none"; } };
     </script>
 
     <script>
