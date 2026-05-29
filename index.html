@@ -315,6 +315,11 @@
                         <input type="text" id="tips" placeholder="🎁 Τα Tips υπολογίζονται αυτόματα..." readonly class="input-field" style="color: #eab308; font-weight: bold; text-align: center;">
                     </div>
 
+                    <div id="retentionWrapper" class="app-card" style="border: 1px solid #eab308; background: rgba(234, 179, 8, 0.05);">
+                        <label for="parakratisi" style="font-size: 9px; font-weight: bold; color: #eab308;">ΠΑΡΑΚΡΑΤΗΣΗ / ΚΡΑΤΗΣΗ (€)</label>
+                        <input type="number" step="0.01" id="parakratisi" value="0" class="input-field" style="color: #fff; font-weight: bold;">
+                    </div>
+
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid #141414; padding-top: 0.75rem;">
                         <span style="font-size: 10px; font-weight: bold; color: #525252;" data-i18n="operatingExpenses">ΛΕΙΤΟΥΡΓΙΚΑ ΕΞΟΔΑ</span>
                         <div class="grid grid-cols-2 gap-2">
@@ -362,6 +367,12 @@
     </div>
 
     <script type="module">
+        // --- 1. ΡΥΘΜΙΣΕΙΣ (Αλλάζεις μόνο εδώ) ---
+        const userConfig = {
+            percentage: 0.45,      // Το ποσοστό σου
+            hasRetention: true     // true για να φαίνεται η παρακράτηση
+        };
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, doc, updateDoc, query, where, getDocs, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -580,7 +591,8 @@
                     else if (e.target.id === 'metrita') document.getElementById('kartes').focus();
                     else if (e.target.id === 'kartes') document.getElementById('freenow').focus();
                     else if (e.target.id === 'freenow') document.getElementById('uber').focus();
-                    else if (e.target.id === 'uber') document.getElementById('kausima').focus();
+                    else if (e.target.id === 'uber') document.getElementById('parakratisi').focus();
+                    else if (e.target.id === 'parakratisi') document.getElementById('kausima').focus();
                     else if (e.target.id === 'kausima') document.getElementById('service').focus();
                     else if (e.target.id === 'service') document.getElementById('plysimo').focus();
                     else if (e.target.id === 'plysimo') document.getElementById('allaExoda').focus();
@@ -747,6 +759,8 @@
             const freenow = parseFloat(document.getElementById('freenow').value) || 0;
             const uber = parseFloat(document.getElementById('uber').value) || 0;
             
+            const parakratisi = parseFloat(document.getElementById('parakratisi').value) || 0;
+            
             const kausima = parseFloat(document.getElementById('kausima').value) || 0;
             const service = parseFloat(document.getElementById('service').value) || 0;
             const plysimo = parseFloat(document.getElementById('plysimo').value) || 0;
@@ -759,6 +773,11 @@
 
             const realIncomes = metrita + kartes + freenow + uber;
             const υπολογισμέναTips = realIncomes > taximetro ? (realIncomes - taximetro) : 0;
+            const totalExpenses = kausima + service + plysimo + allaExoda;
+
+            // ΝΕΟΣ ΥΠΟΛΟΓΙΣΜΟΣ
+            const myShare = realIncomes * userConfig.percentage;
+            const finalNet = userConfig.hasRetention ? (myShare - parakratisi) : myShare;
 
             const shiftData = {
                 date: document.getElementById('date').value,
@@ -770,6 +789,7 @@
                 kartes: kartes,
                 freenow: freenow,
                 uber: uber,
+                parakratisi: parakratisi,
                 kausima: kausima,
                 service: service,
                 plysimo: plysimo,
@@ -779,10 +799,11 @@
                 notes: document.getElementById('notes').value,
                 timestamp: new Date().getTime(),
                 
+                percentageUsed: userConfig.percentage,
                 synolikesEispraxeis: Math.round(taximetro * 100) / 100,
                 tips: Math.round(υπολογισμέναTips * 100) / 100,
-                totalExpenses: Math.round((kausima + service + plysimo + allaExoda) * 100) / 100,
-                katharoKerdos: Math.round((realIncomes - (kausima + service + plysimo + allaExoda)) * 100) / 100
+                totalExpenses: Math.round(totalExpenses * 100) / 100,
+                katharoKerdos: Math.round((finalNet - totalExpenses) * 100) / 100
             };
 
             try {
@@ -800,6 +821,7 @@
         function resetFormState() {
             document.getElementById('editingShiftId').value = "";
             document.getElementById('shiftForm').reset();
+            document.getElementById('parakratisi').value = "0";
             document.getElementById('date').valueAsDate = new Date();
             document.getElementById('cancelEditBtn').classList.add('hidden');
             document.getElementById('saveShiftBtn').textContent = "Καταχώρηση Βάρδιας";
@@ -830,6 +852,7 @@
             document.getElementById('freenow').value = shift.freenow;
             document.getElementById('uber').value = shift.uber || 0;
             document.getElementById('tips').value = "Υπολογίζεται αυτόματα...";
+            document.getElementById('parakratisi').value = shift.parakratisi || 0;
             document.getElementById('kausima').value = shift.kausima;
             document.getElementById('service').value = shift.service;
             document.getElementById('plysimo').value = shift.plysimo;
@@ -1064,6 +1087,12 @@
 
         window.closeAnalysisModal = function() { document.getElementById('analysisModal').style.display = "none"; };
         window.onclick = function(event) { const modal = document.getElementById('analysisModal'); if (event.target == modal) { modal.style.display = "none"; } };
+
+        // UI INITIALIZATION
+        const retentionWrapper = document.getElementById('retentionWrapper');
+        if (retentionWrapper) {
+            retentionWrapper.style.display = userConfig.hasRetention ? 'block' : 'none';
+        }
     </script>
 
     <script>
