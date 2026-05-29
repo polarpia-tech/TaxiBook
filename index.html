@@ -3,227 +3,408 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taxi Driver App</title>
+    <title>Taxi Driver Pro</title>
     <style>
         :root {
-            --primary: #ffcc00;
-            --dark: #333;
-            --light: #f4f4f4;
-            --danger: #d9534f;
-            --success: #5cb85c;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --primary: #f6ad55;
+            --primary-dark: #dd6b20;
+            --accent: #2b6cb0;
+            --success: #48bb78;
+            --danger: #e53e3e;
+            --nav-bg: #1a202c;
         }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--light);
-            color: var(--dark);
-            padding-bottom: 70px; /* Space for bottom nav */
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 90px;
         }
+
         header {
-            background-color: var(--primary);
-            padding: 15px;
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: #fff;
+            padding: 20px;
             text-align: center;
-            font-weight: bold;
-            font-size: 1.2em;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            border-bottom: 4px solid var(--primary);
         }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
         .tab-content {
             display: none;
-            padding: 20px;
         }
+
         .tab-content.active {
             display: block;
+            animation: fadeIn 0.3s ease-in-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--nav-bg);
+            margin-top: 5px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
+        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
+
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
         }
+
         input[type="number"], select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
             box-sizing: border-box;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background-color: #f7fafc;
         }
+
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(246, 173, 85, 0.2);
+        }
+
         .toggle-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #fff;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            padding: 14px 0;
+            border-bottom: 1px solid #edf2f7;
         }
+
+        .toggle-container:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Modern Switch Styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e0;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* Results Display */
+        .result-box {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 18px;
+            border-left: 5px solid var(--primary);
+            border-radius: 12px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .result-row:last-child {
+            margin-bottom: 0;
+            padding-top: 8px;
+            border-top: 1px dashed #cbd5e0;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
         button {
             width: 100%;
-            padding: 12px;
-            background-color: var(--dark);
+            padding: 14px;
+            background-color: var(--nav-bg);
             color: #fff;
             border: none;
-            border-radius: 5px;
-            font-size: 1em;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
-            margin-top: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
+
+        button:active { transform: scale(0.98); }
         button.success { background-color: var(--success); }
+        button.success:hover { background-color: #38a169; }
         button.danger { background-color: var(--danger); }
-        
-        .result-box {
-            background: #fff;
-            padding: 15px;
-            border-left: 5px solid var(--primary);
-            margin-top: 20px;
-            border-radius: 4px;
-        }
-        
+
+        /* History Cards */
         .history-item {
             background: #fff;
-            padding: 10px;
-            border: 1px solid #ddd;
-            margin-bottom: 10px;
-            border-radius: 5px;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #edf2f7;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        
-        .clearance-box {
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            border-bottom: 1px solid #f7fafc;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+
+        .clearance-badge {
+            background: #e2e8f0;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 1rem;
+            text-align: center;
+            border: 1px dashed #cbd5e0;
         }
 
         /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: var(--dark);
+            bottom: 0; left: 0; right: 0;
+            background-color: var(--nav-bg);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
+            padding: 12px 0;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
         }
+
         .nav-item {
-            color: #fff;
+            color: #a0aec0;
             text-align: center;
             cursor: pointer;
             flex-grow: 1;
-            font-size: 0.9em;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
         }
+
+        .nav-icon {
+            font-size: 1.2rem;
+        }
+
         .nav-item.active {
             color: var(--primary);
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <header data-i18n="appTitle">Ταξί - Διαχείριση Βάρδιας</header>
+    <header id="app-title" data-i18n="appTitle">Ταξί - Διαχείριση Βάρδιας</header>
 
-    <div id="tab-home" class="tab-content active">
-        <h2 data-i18n="shiftEntry">Καταχώρηση Βάρδιας</h2>
+    <div class="container">
         
-        <div class="form-group">
-            <label data-i18n="grossRevenue">Τζίρος / Εισπράξεις (€)</label>
-            <input type="number" id="input-gross" placeholder="π.χ. 150" oninput="calculateLive()">
-        </div>
+        <div id="tab-home" class="tab-content active">
+            <h2 data-i18n="shiftEntry">Καταχώρηση Βάρδιας</h2>
+            
+            <div class="card">
+                <div class="form-group">
+                    <label data-i18n="grossRevenue">Τζίρος / Εισπράξεις (€)</label>
+                    <input type="number" id="input-gross" placeholder="0.00" oninput="calculateLive()">
+                </div>
 
-        <div class="form-group" id="deductions-container" style="display: none;">
-            <label data-i18n="dailyDeduction">Ημερήσια Παρακράτηση (€)</label>
-            <input type="number" id="input-deduction" placeholder="π.χ. 12" oninput="calculateLive()">
-        </div>
+                <div class="form-group" id="deductions-container" style="display: none;">
+                    <label data-i18n="dailyDeduction">Ημερήσια Παρακράτηση (€)</label>
+                    <input type="number" id="input-deduction" placeholder="0.00" oninput="calculateLive()">
+                </div>
 
-        <div class="result-box">
-            <strong data-i18n="liveCalculation">Υπολογισμός (βάσει του ποσοστού σου):</strong><br><br>
-            <span data-i18n="yourShare">Το μερίδιό σου: </span><span id="calc-share">0.00</span>€<br>
-            <span data-i18n="netProfit">Καθαρό Κέρδος (μετά τις κρατήσεις): </span><strong id="calc-net">0.00</strong>€
-        </div>
+                <div class="result-box">
+                    <div class="result-row">
+                        <span data-i18n="yourShare">Το μερίδιό σου:</span>
+                        <span><span id="calc-share">0.00</span>€</span>
+                    </div>
+                    <div class="result-row">
+                        <span data-i18n="netProfit">Καθαρό Κέρδος:</span>
+                        <strong><span id="calc-net">0.00</span>€</strong>
+                    </div>
+                </div>
 
-        <button class="success" onclick="saveShift()" data-i18n="saveShift">Αποθήκευση Βάρδιας</button>
-    </div>
-
-    <div id="tab-history" class="tab-content">
-        <h2 data-i18n="monthlyClearance">Εκκαθάριση Μήνα</h2>
-        <div class="clearance-box">
-            <p><span data-i18n="totalDeductionsThisMonth">Συνολικές Κρατήσεις Μήνα: </span><strong id="total-deducted">0.00</strong>€</p>
-            <div class="form-group">
-                <label data-i18n="returnedByOwner">Επιστροφή από Ιδιοκτήτη (€)</label>
-                <input type="number" id="input-return" placeholder="0" oninput="calculateClearance()">
+                <button class="success" onclick="saveShift()" data-i18n="saveShift">Αποθήκευση Βάρδιας</button>
             </div>
-            <p><span data-i18n="finalBalance">Τελικό Υπόλοιπο: </span><strong id="clearance-balance">0.00</strong>€</p>
         </div>
 
-        <h2 data-i18n="shiftHistory">Ιστορικό Βαρδιών</h2>
-        <div id="history-list"></div>
-        <button class="danger" onclick="clearHistory()" data-i18n="clearHistoryBtn">Διαγραφή Ιστορικού</button>
-    </div>
+        <div id="tab-history" class="tab-content">
+            <h2 data-i18n="monthlyClearance">Εκκαθάριση Μήνα</h2>
+            
+            <div class="card">
+                <div class="result-row" style="margin-bottom: 15px;">
+                    <span data-i18n="totalDeductionsThisMonth">Συνολικές Κρατήσεις:</span>
+                    <strong style="color: var(--danger);"><span id="total-deducted">0.00</span>€</strong>
+                </div>
+                
+                <div class="form-group">
+                    <label data-i18n="returnedByOwner">Επιστροφή από Ιδιοκτήτη (€)</label>
+                    <input type="number" id="input-return" placeholder="0.00" oninput="calculateClearance()">
+                </div>
+                
+                <div class="clearance-badge">
+                    <span data-i18n="finalBalance">Τελικό Υπόλοιπο:</span> 
+                    <strong id="clearance-balance">0.00€</strong>
+                </div>
+            </div>
 
-    <div id="tab-settings" class="tab-content">
-        <h2 data-i18n="driverSettings">⚙️ Ρυθμίσεις Οδηγού</h2>
-        
-        <div class="form-group">
-            <label data-i18n="language">Γλώσσα (Language)</label>
-            <select id="setting-lang" onchange="changeLanguage()">
-                <option value="el">Ελληνικά</option>
-                <option value="en">English</option>
-            </select>
+            <h2 data-i18n="shiftHistory">Ιστορικό Βαρδιών</h2>
+            <div id="history-list"></div>
+            <button class="danger" style="margin-top: 10px;" onclick="clearHistory()" data-i18n="clearHistoryBtn">Διαγραφή Ιστορικού</button>
         </div>
 
-        <div class="form-group">
-            <label data-i18n="driverPercentageSetting">Ποσοστό Οδηγού (%)</label>
-            <input type="number" id="setting-percentage" placeholder="45" value="45">
+        <div id="tab-settings" class="tab-content">
+            <h2 data-i18n="driverSettings">⚙️ Ρυθμίσεις Οδηγού</h2>
+            
+            <div class="card">
+                <div class="form-group">
+                    <label data-i18n="language">Γλώσσα (Language)</label>
+                    <select id="setting-lang" onchange="changeLanguage()">
+                        <option value="el">Ελληνικά</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="driverPercentageSetting">Ποσοστό Οδηγού (%)</label>
+                    <input type="number" id="setting-percentage" value="45">
+                </div>
+            </div>
+
+            <div class="card" style="padding: 5px 20px;">
+                <div class="toggle-container">
+                    <span class="toggle-label" data-i18n="autoTaximeter">Αυτόματη Λήψη Ταξίμετρου</span>
+                    <label class="switch">
+                        <input type="checkbox" id="setting-bluetooth">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-container">
+                    <span class="toggle-label" data-i18n="enableDeductions">Κρατήσεις Μισθολογίου</span>
+                    <label class="switch">
+                        <input type="checkbox" id="setting-deductions" onchange="toggleDeductionsUI()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button onclick="saveSettings()" style="margin-top: 10px;" data-i18n="saveSettingsBtn">Αποθήκευση Ρυθμίσεων</button>
         </div>
 
-        <div class="toggle-container">
-            <span data-i18n="autoTaximeter">Αυτόματη Λήψη Ταξίμετρου</span>
-            <input type="checkbox" id="setting-bluetooth">
-        </div>
-
-        <div class="toggle-container">
-            <span data-i18n="enableDeductions">Ενεργοποίηση Κρατήσεων (Μισθολόγιο)</span>
-            <input type="checkbox" id="setting-deductions" onchange="toggleDeductionsUI()">
-        </div>
-
-        <button onclick="saveSettings()" data-i18n="saveSettingsBtn">Αποθήκευση Ρυθμίσεων</button>
     </div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('tab-home')" id="nav-home" data-i18n="navHome">ΑΡΧΙΚΗ</div>
-        <div class="nav-item" onclick="switchTab('tab-history')" id="nav-history" data-i18n="navHistory">ΙΣΤΟΡΙΚΟ</div>
-        <div class="nav-item" onclick="switchTab('tab-settings')" id="nav-settings" data-i18n="navSettings">⚙️ ΡΥΘΜΙΣΕΙΣ</div>
+        <div class="nav-item active" onclick="switchTab('tab-home')" id="nav-home">
+            <span class="nav-icon">🏠</span>
+            <span data-i18n="navHome">ΑΡΧΙΚΗ</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tab-history')" id="nav-history">
+            <span class="nav-icon">📊</span>
+            <span data-i18n="navHistory">ΙΣΤΟΡΙΚΟ</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tab-settings')" id="nav-settings">
+            <span class="nav-icon">⚙️</span>
+            <span data-i18n="navSettings">ΡΥΘΜΙΣΕΙΣ</span>
+        </div>
     </nav>
 
     <script>
-        // --- 1. ΔΕΔΟΜΕΝΑ ΜΕΤΑΦΡΑΣΗΣ (i18n) ---
+        // --- 1. ΛΕΞΙΚΟ ΜΕΤΑΦΡΑΣΕΩΝ (i18n) ---
         const translations = {
             el: {
                 appTitle: "Ταξί - Διαχείριση Βάρδιας",
                 shiftEntry: "Καταχώρηση Βάρδιας",
                 grossRevenue: "Τζίρος / Εισπράξεις (€)",
                 dailyDeduction: "Ημερήσια Παρακράτηση (€)",
-                liveCalculation: "Υπολογισμός (βάσει του ποσοστού σου):",
-                yourShare: "Το μερίδιό σου: ",
-                netProfit: "Καθαρό Κέρδος (μετά τις κρατήσεις): ",
+                yourShare: "Το μερίδιό σου:",
+                netProfit: "Καθαρό Κέρδος:",
                 saveShift: "Αποθήκευση Βάρδιας",
                 monthlyClearance: "Εκκαθάριση Μήνα",
-                totalDeductionsThisMonth: "Συνολικές Κρατήσεις Μήνα: ",
+                totalDeductionsThisMonth: "Συνολικές Κρατήσεις:",
                 returnedByOwner: "Επιστροφή από Ιδιοκτήτη (€)",
-                finalBalance: "Τελικό Υπόλοιπο: ",
+                finalBalance: "Τελικό Υπόλοιπο:",
                 shiftHistory: "Ιστορικό Βαρδιών",
                 clearHistoryBtn: "Διαγραφή Ιστορικού",
                 driverSettings: "⚙️ Ρυθμίσεις Οδηγού",
                 language: "Γλώσσα (Language)",
                 driverPercentageSetting: "Ποσοστό Οδηγού (%)",
                 autoTaximeter: "Αυτόματη Λήψη Ταξίμετρου",
-                enableDeductions: "Ενεργοποίηση Κρατήσεων (Μισθολόγιο)",
+                enableDeductions: "Κρατήσεις Μισθολογίου",
                 saveSettingsBtn: "Αποθήκευση Ρυθμίσεων",
                 navHome: "ΑΡΧΙΚΗ",
                 navHistory: "ΙΣΤΟΡΙΚΟ",
-                navSettings: "⚙️ ΡΥΘΜΙΣΕΙΣ",
+                navSettings: "ΡΥΘΜΙΣΕΙΣ",
                 shiftText: "Βάρδια",
                 grossText: "Τζίρος",
                 deductionText: "Κράτηση",
@@ -234,25 +415,24 @@
                 shiftEntry: "Shift Entry",
                 grossRevenue: "Gross Revenue (€)",
                 dailyDeduction: "Daily Deduction (€)",
-                liveCalculation: "Calculation (based on your %):",
-                yourShare: "Your Share: ",
-                netProfit: "Net Profit (after deductions): ",
+                yourShare: "Your Share:",
+                netProfit: "Net Profit:",
                 saveShift: "Save Shift",
                 monthlyClearance: "Monthly Clearance",
-                totalDeductionsThisMonth: "Total Deductions this Month: ",
+                totalDeductionsThisMonth: "Total Deductions:",
                 returnedByOwner: "Returned by Owner (€)",
-                finalBalance: "Final Balance: ",
+                finalBalance: "Final Balance:",
                 shiftHistory: "Shift History",
                 clearHistoryBtn: "Clear History",
                 driverSettings: "⚙️ Driver Settings",
                 language: "Language (Γλώσσα)",
                 driverPercentageSetting: "Driver Percentage (%)",
-                autoTaximeter: "Auto Taximeter (Bluetooth)",
-                enableDeductions: "Enable Deductions / Payroll",
+                autoTaximeter: "Auto Taximeter",
+                enableDeductions: "Payroll Deductions",
                 saveSettingsBtn: "Save Settings",
                 navHome: "HOME",
                 navHistory: "HISTORY",
-                navSettings: "⚙️ SETTINGS",
+                navSettings: "SETTINGS",
                 shiftText: "Shift",
                 grossText: "Gross",
                 deductionText: "Deduction",
@@ -260,7 +440,7 @@
             }
         };
 
-        // --- 2. ΑΡΧΙΚΟΠΟΙΗΣΗ & ΡΥΘΜΙΣΕΙΣ ---
+        // --- 2. ΔΙΑΧΕΙΡΙΣΗ ΚΑΤΑΣΤΑΣΗΣ & STORAGE ---
         let currentLang = localStorage.getItem('app_lang') || 'el';
         let driverPercentage = parseFloat(localStorage.getItem('app_percentage')) || 45;
         let deductionsEnabled = localStorage.getItem('app_deductions') === 'true';
@@ -293,32 +473,31 @@
             toggleDeductionsUI();
             calculateLive(); 
             applyTranslations();
-            alert(currentLang === 'el' ? "Οι ρυθμίσεις αποθηκεύτηκαν!" : "Settings saved!");
+            alert(currentLang === 'el' ? "Οι ρυθμίσεις αποθηκεύτηκαν επιτυχώς!" : "Settings saved successfully!");
         }
 
         function toggleDeductionsUI() {
             document.getElementById('deductions-container').style.display = deductionsEnabled ? 'block' : 'none';
         }
 
-        // --- 3. ΠΛΟΗΓΗΣΗ (TABS) ---
+        // --- 3. NAVIGATION (TABS) ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
             
-            // Highlight nav
             if(tabId === 'tab-home') document.getElementById('nav-home').classList.add('active');
             if(tabId === 'tab-history') document.getElementById('nav-history').classList.add('active');
             if(tabId === 'tab-settings') document.getElementById('nav-settings').classList.add('active');
         }
 
-        // --- 4. ΥΠΟΛΟΓΙΣΜΟΙ ΒΑΡΔΙΑΣ ---
+        // --- 4. ΛΟΓΙΚΗ ΥΠΟΛΟΓΙΣΜΩΝ ---
         function calculateLive() {
             let gross = parseFloat(document.getElementById('input-gross').value) || 0;
             let deduction = deductionsEnabled ? (parseFloat(document.getElementById('input-deduction').value) || 0) : 0;
             
-            // Αντικειμενικός μαθηματικός υπολογισμός του μεριδίου βάσει ποσοστού
+            // Αντικειμενικός υπολογισμός με βάση το ρυθμισμένο ποσοστό
             let share = gross * (driverPercentage / 100);
             let net = share - deduction;
 
@@ -341,13 +520,12 @@
             history.push(shiftData);
             localStorage.setItem('app_history', JSON.stringify(history));
 
-            // Καθαρισμός φόρμας
             document.getElementById('input-gross').value = '';
             document.getElementById('input-deduction').value = '';
             calculateLive();
             
             updateHistoryUI();
-            alert(currentLang === 'el' ? "Η βάρδια αποθηκεύτηκε!" : "Shift saved!");
+            alert(currentLang === 'el' ? "Η βάρδια καταχωρήθηκε!" : "Shift recorded!");
         }
 
         // --- 5. ΙΣΤΟΡΙΚΟ & ΕΚΚΑΘΑΡΙΣΗ ---
@@ -356,49 +534,67 @@
             let listHTML = '';
             let totalDeducted = 0;
 
-            history.reverse().forEach((shift, index) => {
+            // Αντιστροφή για να φαίνονται οι πρόσφατες πάνω-πάνω
+            [...history].reverse().forEach((shift) => {
                 totalDeducted += shift.deduction;
                 listHTML += `
                     <div class="history-item">
-                        <strong><span data-i18n="shiftText">Βάρδια</span>: ${shift.date}</strong><br>
-                        <span data-i18n="grossText">Τζίρος</span>: ${shift.gross.toFixed(2)}€ | 
-                        <span data-i18n="deductionText">Κράτηση</span>: ${shift.deduction.toFixed(2)}€ <br>
-                        <span data-i18n="netText">Καθαρά</span>: <strong>${shift.net.toFixed(2)}€</strong>
+                        <div class="history-header">
+                            <span data-i18n="shiftText">Βάρδια</span>
+                            <span>${shift.date}</span>
+                        </div>
+                        <div class="result-row">
+                            <span data-i18n="grossText">Τζίρος</span>
+                            <span>${shift.gross.toFixed(2)}€</span>
+                        </div>
+                        <div class="result-row">
+                            <span data-i18n="deductionText">Κράτηση</span>
+                            <span style="color:var(--danger)">-${shift.deduction.toFixed(2)}€</span>
+                        </div>
+                        <div class="result-row" style="margin-top:5px; padding-top:5px; border-top:1px solid #f7fafc;">
+                            <span data-i18n="netText">Καθαρά</span>
+                            <strong style="color:var(--success)">${shift.net.toFixed(2)}€</strong>
+                        </div>
                     </div>
                 `;
             });
 
-            document.getElementById('history-list').innerHTML = listHTML;
+            document.getElementById('history-list').innerHTML = listHTML || '<p style="text-align:center; color:var(--text-muted);">Δεν υπάρχουν καταχωρημένες βάρδιες.</p>';
             document.getElementById('total-deducted').innerText = totalDeducted.toFixed(2);
             
             calculateClearance();
-            applyTranslations(); // Σημαντικό: Καλούμε τις μεταφράσεις αφού δημιουργήσαμε δυναμικό HTML
+            applyTranslations(); 
         }
 
         function calculateClearance() {
             let totalDeducted = parseFloat(document.getElementById('total-deducted').innerText) || 0;
             let returned = parseFloat(document.getElementById('input-return').value) || 0;
             
-            // Το υπόλοιπο είναι η επιστροφή μείον τα συνολικά κρατηθέντα 
-            // Αν το ποσό είναι αρνητικό σημαίνει ότι τα παρακρατηθέντα υπερκαλύπτουν την επιστροφή.
             let balance = returned - totalDeducted;
             
             let balanceEl = document.getElementById('clearance-balance');
-            balanceEl.innerText = balance.toFixed(2);
-            balanceEl.style.color = balance >= 0 ? "var(--success)" : "var(--danger)";
+            balanceEl.innerText = balance.toFixed(2) + "€";
+            
+            if (balance === 0) {
+                balanceEl.style.color = "var(--text-main)";
+            } else {
+                balanceEl.style.color = balance > 0 ? "var(--success)" : "var(--danger)";
+            }
         }
 
         function clearHistory() {
-            if(confirm(currentLang === 'el' ? "Σίγουρα θέλεις να διαγράψεις το ιστορικό;" : "Are you sure you want to clear history?")) {
+            let msg = currentLang === 'el' ? "Προσοχή! Θέλεις σίγουρα να διαγράψεις όλο το ιστορικό;" : "Warning! Clear all history?";
+            if(confirm(msg)) {
                 localStorage.removeItem('app_history');
                 document.getElementById('input-return').value = '';
                 updateHistoryUI();
             }
         }
 
-        // --- 6. ΣΥΣΤΗΜΑ ΜΕΤΑΦΡΑΣΗΣ ---
+        // --- 6. ΔΙΕΘΝΟΠΟΙΗΣΗ (i18n) ---
         function changeLanguage() {
             currentLang = document.getElementById('setting-lang').value;
+            localStorage.setItem('app_lang', currentLang);
             applyTranslations();
         }
 
