@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TaxiBook Pro">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3448/3448636.png">
-    <meta "theme-color" content="#0a0a0a">
+    <meta name="theme-color" content="#0a0a0a">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -229,12 +229,19 @@
                     <div><span style="color: #737373;" data-i18n="clearanceTips">Συνολικά Tips:</span></div>
                     <div style="text-align: right; font-weight: bold; color: #34d399;" id="clearanceTipsVal">0,00 €</div>
                     
-                    <div><span style="color: #737373;" data-i18n="clearanceExpenses">Συνολικά Έξοδα:</span></div>
+                    <div><span style="color: #737373;" data-i18n="clearanceExpenses">Συνολικά Έξοδα (Αυτοκινήτου):</span></div>
                     <div style="text-align: right; font-weight: bold; color: #ef4444;" id="clearanceExpensesVal">0,00 €</div>
+
+                    <div><span style="color: #737373;" data-i18n="clearanceCashHeld">Μετρητά Οδηγού (Τσέπη):</span></div>
+                    <div style="text-align: right; font-weight: bold; color: #a3a3a3;" id="clearanceCashHeldVal">0,00 €</div>
                 </div>
                 <div style="margin-top: 8px; border-top: 1px dashed #262626; padding-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.9rem; font-weight: 900;" data-i18n="clearanceNet">Καθαρή Πληρωμή Οδηγού:</span>
-                    <span id="clearanceNetVal" style="font-size: 1.1rem; font-weight: 900; color: #34d399;">0,00 €</span>
+                    <span style="font-size: 0.9rem; font-weight: 900;" data-i18n="clearanceNet">Καθαρά Έσοδα Οδηγού:</span>
+                    <span id="clearanceNetVal" style="font-size: 1.1rem; font-weight: 900; color: #eab308;">0,00 €</span>
+                </div>
+                <div style="margin-top: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.9rem; font-weight: 900;" data-i18n="clearancePayout">Τελικό Υπόλοιπο (Προς Εξόφληση):</span>
+                    <span id="clearancePayoutVal" style="font-size: 1.1rem; font-weight: 900; color: #34d399;">0,00 €</span>
                 </div>
             </div>
 
@@ -324,7 +331,7 @@
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid #141414; padding-top: 0.75rem;">
                         <span style="font-size: 10px; font-weight: bold; color: #525252;" data-i18n="operatingExpenses">ΛΕΙΤΟΥΡΓΙΚΑ ΕΞΟΔΑ</span>
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="number" step="0.01" id="kausima" placeholder="⛽ Καύσιμα (€)" class="input-field">
+                            <input type="number" step="0.01" id="kausima" placeholder="⛽ Καύσια (€)" class="input-field">
                             <input type="number" step="0.01" id="service" placeholder="🔧 Service (€)" class="input-field">
                             <input type="number" step="0.01" id="plysimo" placeholder="🧼 Καθαρισμός (€)" class="input-field">
                             <input type="number" step="0.01" id="allaExoda" placeholder="🎟️ Διόδια / Λοιπά (€)" class="input-field">
@@ -381,7 +388,7 @@
         <button id="floatingAddBtn" class="floating-btn">+</button>
         
         <button id="showSettingsBtn" class="nav-btn">
-            <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19 15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
             <span style="font-size: 9px; letter-spacing: 0.05em;" data-i18n="navSettings">ΡΥΘΜΙΣΕΙΣ</span>
         </button>
 
@@ -451,7 +458,7 @@
                 navSettings: "ΡΥΘΜΙΣΕΙΣ", settingsTitle: "Ρυθμίσεις Εφαρμογής", autoTaximeterTitle: "⚙️ ΑΥΤΟΜΑΤΗ ΛΗΨΗ ΤΑΞΙΜΕΤΡΟΥ",
                 connectBleBtn: "🔵 Σύνδεση BLE", percentageLabel: "ΠΟΣΟΣΤΟ ΟΔΗΓΟΥ (%)", monthlyClearanceTitle: "📊 ΜΗΝΙΑΙΑ ΕΚΚΑΘΑΡΙΣΗ ΟΔΗΓΟΥ",
                 clearanceGross: "Σύνολο Ταξιμέτρου (Ζ):", clearanceShare: "Ποσοστό Οδηγού:", clearanceTips: "Συνολικά Tips:",
-                clearanceExpenses: "Συνολικά Έξοδα:", clearanceNet: "Καθαρή Πληρωμή Οδηγού:"
+                clearanceExpenses: "Συνολικά Έξοδα (Αυτοκινήτου):", clearanceNet: "Καθαρά Έσοδα Οδηγού:", clearanceCashHeld: "Μετρητά Οδηγού (Τσέπη):", clearancePayout: "Τελικό Υπόλοιπο (Προς Εξόφληση):"
             },
             en: {
                 logout: "Logout", authTitle: "Driver Login", driverEmail: "DRIVER EMAIL", secretCode: "SECRET CODE",
@@ -471,7 +478,7 @@
                 navSettings: "SETTINGS", settingsTitle: "App Settings", autoTaximeterTitle: "⚙️ AUTOMATIC TAXIMETER FETCH",
                 connectBleBtn: "🔵 Connect BLE", percentageLabel: "DRIVER PERCENTAGE (%)", monthlyClearanceTitle: "📊 MONTHLY DRIVER CLEARANCE",
                 clearanceGross: "Total Taximeter (Z):", clearanceShare: "Driver Share:", clearanceTips: "Total Tips:",
-                clearanceExpenses: "Total Expenses:", clearanceNet: "Driver Net Payout:"
+                clearanceExpenses: "Total Expenses (Vehicle):", clearanceNet: "Driver Net Earnings:", clearanceCashHeld: "Driver Cash Held:", clearancePayout: "Final Balance (To Settle):"
             },
             de: {
                 logout: "Abmelden", authTitle: "Fahrer-Login", driverEmail: "FAHRER-EMAIL", secretCode: "GEHEIMCODE",
@@ -491,7 +498,7 @@
                 navSettings: "EINSTELLUNGEN", settingsTitle: "App-Einstellungen", autoTaximeterTitle: "⚙️ AUTOMATISCHE TAXAMETER-ABFRAGE",
                 connectBleBtn: "🔵 BLE Verbinden", percentageLabel: "FAHRER-ANTEIL (%)", monthlyClearanceTitle: "📊 MONATLICHE FAHRERABRECHNUNG",
                 clearanceGross: "Taxameter Gesamt (Z):", clearanceShare: "Fahrer-Anteil:", clearanceTips: "Gesamt Trinkgeld:",
-                clearanceExpenses: "Gesamt Ausgaben:", clearanceNet: "Netto-Auszahlung Fahrer:"
+                clearanceExpenses: "Gesamt Ausgaben:", clearanceNet: "Nettoverdienst Fahrer:", clearanceCashHeld: "Barbestand Fahrer:", clearancePayout: "Restguthaben (Abrechnung):"
             },
             tr: {
                 logout: "Çıkış", authTitle: "Sürücü Girişi", driverEmail: "SÜRÜCÜ E-POSTASI", secretCode: "GİZLİ ŞİFRE",
@@ -511,7 +518,7 @@
                 navSettings: "AYARLAR", settingsTitle: "Uygulama Ayarları", autoTaximeterTitle: "⚙️ OTOMATİK TAKSMETRE ALIMI",
                 connectBleBtn: "🔵 BLE Bağlan", percentageLabel: "SÜRÜCÜ YÜZDESİ (%)", monthlyClearanceTitle: "📊 AYLIK SÜRÜCÜ HESAPLAŞMASI",
                 clearanceGross: "Toplam Taksimetre (Z):", clearanceShare: "Sürücü Payı:", clearanceTips: "Toplam Bahşiş:",
-                clearanceExpenses: "Toplam Giderler:", clearanceNet: "Sürücü Net Ödemesi:"
+                clearanceExpenses: "Toplam Giderler:", clearanceNet: "Sürücü Net Kazancı:", clearanceCashHeld: "Sürücüdeki Nakit:", clearancePayout: "Kalan Bakiye (Hesaplaşma):"
             },
             ru: {
                 logout: "Выйти", authTitle: "Вход для водителей", driverEmail: "EMAIL ВОДИТЕЛЯ", secretCode: "СЕКРЕТНЫЙ КОД",
@@ -531,7 +538,7 @@
                 navSettings: "НАСТРОЙКИ", settingsTitle: "Настройки Приложения", autoTaximeterTitle: "⚙️ АВТОМАТИЧЕСКИЙ ЗАПРОС ТАКСОМЕТРА",
                 connectBleBtn: "🔵 Подключить BLE", percentageLabel: "ПРОЦЕНТ ВОДИТЕЛЯ (%)", monthlyClearanceTitle: "📊 ЕЖЕМЕСЯЧНЫЙ РАСЧЕТ ВОДИТЕЛЯ",
                 clearanceGross: "Всего по таксометру (Z):", clearanceShare: "Доля Водителя:", clearanceTips: "Всего чаевых:",
-                clearanceExpenses: "Всего расходов:", clearanceNet: "Чистая Выплата Водителю:"
+                clearanceExpenses: "Всего расходов:", clearanceNet: "Чистый доход водителя:", clearanceCashHeld: "Наличные у водителя:", clearancePayout: "Итоговый баланс (К расчету):"
             },
             hr: {
                 logout: "Odjava", authTitle: "Prijava Vozača", driverEmail: "EMAIL VOZAČA", secretCode: "TAJNI KOD",
@@ -551,7 +558,7 @@
                 navSettings: "POSTAVKE", settingsTitle: "Postavke Aplikacije", autoTaximeterTitle: "⚙️ AUTOMATSKO DOHVAĆANJE TAKSOMETRA",
                 connectBleBtn: "🔵 Poveži BLE", percentageLabel: "POSTOTAK VOZAČA (%)", monthlyClearanceTitle: "📊 MJESEČNI OBRAČUN VOZAČA",
                 clearanceGross: "Ukupno Taksometar (Z):", clearanceShare: "Udio Vozača:", clearanceTips: "Ukupno Napojnice:",
-                clearanceExpenses: "Ukupno Troškovi:", clearanceNet: "Neto Isplata Vozaču:"
+                clearanceExpenses: "Ukupno Troškovi:", clearanceNet: "Neto zarada vozača:", clearanceCashHeld: "Gotovina kod vozača:", clearancePayout: "Konačni saldo (Za naplatu):"
             },
             sr: {
                 logout: "Odjava", authTitle: "Prijava Vozača", driverEmail: "EMAIL VOZAČA", secretCode: "TAJNI KOD",
@@ -571,7 +578,7 @@
                 navSettings: "POSTAVKE", settingsTitle: "Postavke Aplikacije", autoTaximeterTitle: "⚙️ AUTOMATSKO DOHVATANJE TAKSOMETRA",
                 connectBleBtn: "🔵 Poveži BLE", percentageLabel: "POSTOTAK VOZAČA (%)", monthlyClearanceTitle: "📊 MESEČNI OBRAČUN VOZAČA",
                 clearanceGross: "Ukupno Taksometar (Z):", clearanceShare: "Udeo Vozača:", clearanceTips: "Ukupno Bakšiš:",
-                clearanceExpenses: "Ukupno Troškovi:", clearanceNet: "Neto Isplata Vozaču:"
+                clearanceExpenses: "Ukupno Troškovi:", clearanceNet: "Neto zarada vozača:", clearanceCashHeld: "Gotovina kod vozača:", clearancePayout: "Konačni saldo (Za naplatu):"
             }
         };
 
@@ -825,9 +832,9 @@
             const realIncomes = metrita + kartes + freenow + uber;
             const υπολογισμέναTips = realIncomes > taximetro ? (realIncomes - taximetro) : 0;
 
-            // ΝΕΟΣ ΔΙΟΡΘΩΜΕΝΟΣ ΥΠΟΛΟΓΙΣΜΟΣ ΒΑΣΕΙ ΠΟΣΟΣΤΟΥ ΟΔΗΓΟΥ (π.χ. 45%)
+            // ΑΝΑΒΑΘΜΙΣΜΕΝΟΣ ΥΠΟΛΟΓΙΣΜΟΣ: Τα έξοδα δεν αφαιρούνται από τον οδηγό
             const ποσοστόΟδηγού = (parseFloat(document.getElementById('driverPercentageInput').value) || 45) / 100;
-            const καθαράΒάρδιας = (taximetro * ποσοστόΟδηγού) + υπολογισμέναTips - (kausima + service + plysimo + allaExoda);
+            const καθαράΒάρδιας = (taximetro * ποσοστόΟδηγού) + υπολογισμέναTips;
 
             const shiftData = {
                 date: document.getElementById('date').value,
@@ -1001,12 +1008,24 @@
             // ΕΝΗΜΕΡΩΣΗ ΜΗΝΙΑΙΑΣ ΕΚΚΑΘΑΡΙΣΗΣ ΣΤΟ ΙΣΤΟΡΙΚΟ
             const currentPercentage = parseFloat(document.getElementById('driverPercentageInput').value) || 45;
             const driverShareCalculated = cacheStats.monthGross * (currentPercentage / 100);
+            
+            // Υπολογισμός τελικής πληρωμής: Καθαρά Έσοδα Οδηγού μείον τα μετρητά που εισέπραξε ήδη
+            const finalPayoutCalculated = cacheStats.monthNet - cacheStats.tCash;
 
             document.getElementById('clearanceGrossVal').textContent = cacheStats.monthGross.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
             document.getElementById('clearanceShareVal').textContent = driverShareCalculated.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ` € (${currentPercentage}%)`;
             document.getElementById('clearanceTipsVal').textContent = cacheStats.totalTips.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
             document.getElementById('clearanceExpensesVal').textContent = cacheStats.monthExp.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+            document.getElementById('clearanceCashHeldVal').textContent = cacheStats.tCash.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
             document.getElementById('clearanceNetVal').textContent = cacheStats.monthNet.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+            
+            const payoutEl = document.getElementById('clearancePayoutVal');
+            payoutEl.textContent = finalPayoutCalculated.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+            if (finalPayoutCalculated >= 0) {
+                payoutEl.style.color = "#34d399"; 
+            } else {
+                payoutEl.style.color = "#ef4444"; 
+            }
 
             document.getElementById('dashNet').textContent = cacheStats.monthNet.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             document.getElementById('dashGross').textContent = cacheStats.monthGross.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
@@ -1130,8 +1149,8 @@
                 html = `
                     <div class="analysis-item"><span class="analysis-label">🚖 ${currentLang==='el'?'Σύνολο Βαρδιών':'Total Shifts'}:</span><span class="analysis-value">${cacheStats.shiftCount} ${currentLang==='el'?'βάρδιες':'shifts'}</span></div>
                     <div class="analysis-item"><span class="analysis-label">💰 ${currentLang==='el'?'Μικτά Έσοδα (Βάσει Ζ)':'Gross Receipts (Z)'}:</span><span class="analysis-value">${cacheStats.monthGross.toFixed(2)} €</span></div>
-                    <div class="analysis-item"><span class="analysis-label">⛽ ${currentLang==='el'?'Συνολικά Έξοδα':'Total Expenses'}:</span><span class="analysis-value">${cacheStats.monthExp.toFixed(2)} €</span></div>
-                    <div class="analysis-item" style="border-top: 1px dashed #262626; margin-top: 8px;"><span class="analysis-label" style="color:#34d399;">🏁 ${currentLang==='el'?'Πραγματικά Καθαρά Κέρδη':'Actual Net Profit'}:</span><span class="analysis-value" style="color:#34d399; font-size:1.1rem;">${cacheStats.monthNet.toFixed(2)} €</span></div>
+                    <div class="analysis-item"><span class="analysis-label">⛽ ${currentLang==='el'?'Συνολικά Έξοδα (Αυτοκινήτου)':'Total Expenses'}:</span><span class="analysis-value">${cacheStats.monthExp.toFixed(2)} €</span></div>
+                    <div class="analysis-item" style="border-top: 1px dashed #262626; margin-top: 8px;"><span class="analysis-label" style="color:#eab308;">🏁 ${currentLang==='el'?'Καθαρά Έσοδα Οδηγού':'Driver Net Earnings'}:</span><span class="analysis-value" style="color:#eab308; font-size:1.1rem;">${cacheStats.monthNet.toFixed(2)} €</span></div>
                 `;
             }
             contentEl.innerHTML = html; modal.style.display = "flex";
