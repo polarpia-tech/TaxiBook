@@ -2,1062 +2,413 @@
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TaxiBook Pro</title>
-    
-    <link rel="manifest" href="manifest.json">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TaxiBook Pro">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3448/3448636.png">
-    <meta name="theme-color" content="#0a0a0a">
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Driver App</title>
     <style>
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #0a0a0a; color: #f5f5f5; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --primary: #ffcc00;
+            --dark: #333;
+            --light: #f4f4f4;
+            --danger: #d9534f;
+            --success: #5cb85c;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            color: var(--dark);
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+        header {
+            background-color: var(--primary);
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--dark);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button.success { background-color: var(--success); }
+        button.danger { background-color: var(--danger); }
         
-        .w-full { width: 100%; }
-        .max-w-xl { max-width: 36rem; margin-left: auto; margin-right: auto; }
-        .max-w-md { max-width: 28rem; margin-left: auto; margin-right: auto; }
-        .hidden { display: none !important; }
-        .flex { display: flex; }
-        .flex-col { flex-direction: column; }
-        .flex-1 { flex: 1 1 0%; }
-        .grid { display: grid; }
-        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-        .gap-1-5 { gap: 0.375rem; }
-        .gap-2 { gap: 0.5rem; }
-        .gap-3 { gap: 0.75rem; }
-        .gap-4 { gap: 1rem; }
-        
-        header { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-        .taxi-strip { width: 100%; height: 8px; background-color: #171717; display: flex; opacity: 0.4; }
-        .taxi-dot { flex: 1; height: 100%; margin: 0 2px; }
-        .bg-yellow { background-color: #eab308; }
-        .bg-dark { background-color: #020202; }
-        
-        .yellow-card {
-            background: linear-gradient(135deg, #eab308 0%, #d97706 100%);
-            color: #0a0a0a; padding: 1.5rem; border-radius: 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.4);
+        .result-box {
+            background: #fff;
+            padding: 15px;
+            border-left: 5px solid var(--primary);
+            margin-top: 20px;
+            border-radius: 4px;
         }
         
-        .app-card { background-color: #050505; border: 1px solid #141414; padding: 1rem; border-radius: 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
-        .sub-box { background-color: rgba(23, 23, 23, 0.5); padding: 0.4rem; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.02); }
-        
-        .driver-id-card { background: #0c0c0c; border: 1px dashed #262626; padding: 0.75rem 1rem; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; }
-        
-        .km-container { background-color: rgba(18,18,18,0.4); padding: 0.75rem; border-radius: 0.75rem; border: 1px solid #141414; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-        .km-col { display: flex; flex-direction: column; justify-content: flex-end; }
-        .km-label-wrapper { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-top: 2px; }
-        
-        .input-field { width: 100%; padding: 0.75rem; background-color: #121212; border: 1px solid #1f1f1f; border-radius: 0.75rem; color: #fff; font-size: 0.875rem; outline: none; transition: border-color 0.2s; }
-        .input-field:focus { border-color: #eab308; }
-        .input-field:disabled { opacity: 0.5; background-color: #1a1a1a; cursor: not-allowed; }
-        
-        .btn-primary { width: 100%; background-color: #eab308; color: #0a0a0a; font-weight: 900; padding: 0.875rem; border: none; border-radius: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; }
-        .select-lang { background-color: #121212; border: 1px solid #1f1f1f; color: #d4d4d4; font-size: 0.75rem; padding: 0.5rem; border-radius: 0.75rem; font-weight: bold; outline: none; }
-        
-        nav { background-color: rgba(5, 5, 5, 0.98); border-top: 1px solid #141414; position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; align-items: center; height: 4.25rem; padding-bottom: env(safe-area-inset-bottom); z-index: 50; box-shadow: 0 -10px 15px -3px rgba(0,0,0,0.5); transition: transform 0.2s ease-in-out; }
-        .nav-hidden { transform: translateY(100%); }
-        
-        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: none; color: #525252; font-weight: bold; cursor: pointer; gap: 5px; transition: color 0.2s; height: 100%; }
-        .nav-btn svg { width: 20px; height: 20px; fill: currentColor; transition: transform 0.2s; }
-        .nav-btn.active { color: #eab308; }
-        .nav-btn-logout { color: #ef4444; }
-        .nav-btn-logout:active { opacity: 0.6; }
-        
-        .floating-btn { width: 3.25rem; height: 3.25rem; background-color: #eab308; color: #0a0a0a; font-size: 1.5rem; font-weight: 900; border-radius: 9999px; border: 4px solid #0a0a0a; position: relative; top: -1.1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(234,179,8,0.15); cursor: pointer; }
-
-        .charts-wrapper { display: flex; flex-direction: column; gap: 0.75rem; }
-        .charts-row-doughnuts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-        @media (max-width: 480px) {
-            .charts-row-doughnuts { grid-template-columns: 1fr; }
+        .history-item {
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
         
-        .chart-box { background-color: #050505; border: 1px solid #141414; padding: 1rem; border-radius: 1.25rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; width: 100%; overflow: hidden; cursor: pointer; transition: transform 0.2s, border-color 0.2s; }
-        .chart-box:hover { border-color: #eab308; transform: scale(1.01); }
-        .chart-title { font-size: 10px; font-weight: 900; color: #525252; letter-spacing: 0.05em; margin-bottom: 1rem; align-self: flex-start; text-transform: uppercase; }
-        .chart-container-rel { width: 100%; height: 160px; position: relative; }
-        .chart-container-line { width: 100%; height: 180px; position: relative; }
-        canvas { max-width: 100%; max-height: 100%; }
+        .clearance-box {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+        }
 
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); align-items: center; justify-content: center; padding: 1rem; }
-        .modal-content { background-color: #050505; border: 1px solid #1f1f1f; border-radius: 1.5rem; max-width: 500px; width: 100%; padding: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; }
-        .close-modal { position: absolute; top: 1rem; right: 1.25rem; color: #737373; font-size: 1.5rem; font-weight: bold; cursor: pointer; }
-        .close-modal:hover { color: #fff; }
-        .modal-title { font-size: 1.1rem; font-weight: 900; color: #eab308; margin-top: 0; margin-bottom: 1rem; text-transform: uppercase; border-bottom: 1px solid #141414; padding-bottom: 0.5rem; }
-        .analysis-item { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #121212; font-size: 0.9rem; }
-        .analysis-label { color: #a3a3a3; font-weight: bold; }
-        .analysis-value { color: #f5f5f5; font-weight: monospace; font-weight: bold; }
-        
-        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 24px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #1f1f1f; transition: .4s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #eab308; }
-        input:checked + .slider:before { transform: translateX(26px); background-color: #0a0a0a; }
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--dark);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        .nav-item {
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+            flex-grow: 1;
+            font-size: 0.9em;
+        }
+        .nav-item.active {
+            color: var(--primary);
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <div class="taxi-strip">
-        <div class="taxi-dot bg-yellow"></div><div class="taxi-dot bg-dark"></div>
-        <div class="taxi-dot bg-yellow"></div><div class="taxi-dot bg-dark"></div>
-        <div class="taxi-dot bg-yellow"></div><div class="taxi-dot bg-dark"></div>
-        <div class="taxi-dot bg-yellow"></div>
+    <header data-i18n="appTitle">Ταξί - Διαχείριση Βάρδιας</header>
+
+    <div id="tab-home" class="tab-content active">
+        <h2 data-i18n="shiftEntry">Καταχώρηση Βάρδιας</h2>
+        
+        <div class="form-group">
+            <label data-i18n="grossRevenue">Τζίρος / Εισπράξεις (€)</label>
+            <input type="number" id="input-gross" placeholder="π.χ. 150" oninput="calculateLive()">
+        </div>
+
+        <div class="form-group" id="deductions-container" style="display: none;">
+            <label data-i18n="dailyDeduction">Ημερήσια Παρακράτηση (€)</label>
+            <input type="number" id="input-deduction" placeholder="π.χ. 12" oninput="calculateLive()">
+        </div>
+
+        <div class="result-box">
+            <strong data-i18n="liveCalculation">Υπολογισμός (βάσει του ποσοστού σου):</strong><br><br>
+            <span data-i18n="yourShare">Το μερίδιό σου: </span><span id="calc-share">0.00</span>€<br>
+            <span data-i18n="netProfit">Καθαρό Κέρδος (μετά τις κρατήσεις): </span><strong id="calc-net">0.00</strong>€
+        </div>
+
+        <button class="success" onclick="saveShift()" data-i18n="saveShift">Αποθήκευση Βάρδιας</button>
     </div>
 
-    <header class="max-w-xl">
-        <div>
-            <span style="font-size: 10px; font-weight: 900; color: #404040; letter-spacing: 0.15em; display: block;">TAXIBOOK</span>
-            <h1 id="monthHeaderTitle" style="font-size: 1.25rem; font-weight: 900; color: #eab308; margin: 0;">Μάιος 2026</h1>
+    <div id="tab-history" class="tab-content">
+        <h2 data-i18n="monthlyClearance">Εκκαθάριση Μήνα</h2>
+        <div class="clearance-box">
+            <p><span data-i18n="totalDeductionsThisMonth">Συνολικές Κρατήσεις Μήνα: </span><strong id="total-deducted">0.00</strong>€</p>
+            <div class="form-group">
+                <label data-i18n="returnedByOwner">Επιστροφή από Ιδιοκτήτη (€)</label>
+                <input type="number" id="input-return" placeholder="0" oninput="calculateClearance()">
+            </div>
+            <p><span data-i18n="finalBalance">Τελικό Υπόλοιπο: </span><strong id="clearance-balance">0.00</strong>€</p>
         </div>
-        <div class="flex" style="align-items: center; gap: 8px;">
-            <select id="langSelect" class="select-lang">
-                <option value="el">🇬🇷 EL</option>
-                <option value="en">🇬🇧 EN</option>
-                <option value="de">🇩🇪 DE</option>
-                <option value="tr">🇹🇷 TR</option>
-                <option value="ru">🇷🇺 RU</option>
-                <option value="hr">🇭🇷 HR</option>
-                <option value="sr">🇷🇸 SR</option>
+
+        <h2 data-i18n="shiftHistory">Ιστορικό Βαρδιών</h2>
+        <div id="history-list"></div>
+        <button class="danger" onclick="clearHistory()" data-i18n="clearHistoryBtn">Διαγραφή Ιστορικού</button>
+    </div>
+
+    <div id="tab-settings" class="tab-content">
+        <h2 data-i18n="driverSettings">⚙️ Ρυθμίσεις Οδηγού</h2>
+        
+        <div class="form-group">
+            <label data-i18n="language">Γλώσσα (Language)</label>
+            <select id="setting-lang" onchange="changeLanguage()">
+                <option value="el">Ελληνικά</option>
+                <option value="en">English</option>
             </select>
         </div>
-    </header>
 
-    <div id="authScreen" class="max-w-md" style="padding: 1rem; margin-top: 2rem;">
-        <form id="authForm" style="background-color: #050505; padding: 1.5rem; border-radius: 1.5rem; border: 1px solid #141414; display: flex; flex-direction: column; gap: 1.25rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
-            <h2 id="authTitle" style="font-size: 1.125rem; font-weight: 900; text-align: center; margin: 0;" data-i18n="authTitle">Σύνδεση Οδηγού</h2>
-            <div>
-                <label style="display: block; font-size: 10px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="driverEmail">EMAIL ΟΔΗΓΟΥ</label>
-                <input type="email" id="authEmail" required class="input-field">
-            </div>
-            <div>
-                <label style="display: block; font-size: 10px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="secretCode">ΜΥΣΤΙΚΟΣ ΚΩΔΙΚΟΣ</label>
-                <input type="password" id="authPassword" required class="input-field">
-            </div>
-            <div id="taxiIdFieldWrapper" class="hidden">
-                <label style="display: block; font-size: 10px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="taxiNumLabel">ΑΡΙΘΜΟΣ ΤΑΞΙ (Πινακίδα/Νούμερο)</label>
-                <input type="text" id="authTaxiNumber" placeholder="TAXI 1234" class="input-field">
-            </div>
-            <button type="submit" id="authSubmitBtn" class="btn-primary" data-i18n="loginBtn">Είσοδος</button>
-            <p style="text-align: center; font-size: 0.75rem; color: #525252; margin: 0;">
-                <span id="authToggleText" data-i18n="noAccount">Δεν έχετε λογαριασμό;</span> 
-                <button type="button" id="toggleAuth" style="background: none; border: none; color: #eab308; font-weight: bold; text-decoration: underline; cursor: pointer; padding: 0;" data-i18n="createAccount">Δημιουργία λογαριασμού</button>
-            </p>
-        </form>
+        <div class="form-group">
+            <label data-i18n="driverPercentageSetting">Ποσοστό Οδηγού (%)</label>
+            <input type="number" id="setting-percentage" placeholder="45" value="45">
+        </div>
+
+        <div class="toggle-container">
+            <span data-i18n="autoTaximeter">Αυτόματη Λήψη Ταξίμετρου</span>
+            <input type="checkbox" id="setting-bluetooth">
+        </div>
+
+        <div class="toggle-container">
+            <span data-i18n="enableDeductions">Ενεργοποίηση Κρατήσεων (Μισθολόγιο)</span>
+            <input type="checkbox" id="setting-deductions" onchange="toggleDeductionsUI()">
+        </div>
+
+        <button onclick="saveSettings()" data-i18n="saveSettingsBtn">Αποθήκευση Ρυθμίσεων</button>
     </div>
 
-    <div id="mainApp" class="hidden max-w-xl" style="padding: 1rem; padding-bottom: 7rem;">
-        
-        <div id="homeTab" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <div class="yellow-card">
-                <span style="font-size: 0.75rem; font-weight: bold; letter-spacing: 0.05em; opacity: 0.85;" data-i18n="netMonth">ΚΑΘΑΡΑ ΜΗΝΑ</span>
-                <div style="font-size: 2.25rem; font-weight: 900; margin: 0.25rem 0 1.25rem 0; letter-spacing: -0.05em;">
-                    <span id="dashNet">0,00</span> <span style="font-size: 1.25rem; font-weight: bold;">€</span>
-                </div>
-                
-                <div class="grid grid-cols-3 gap-2">
-                    <div style="background-color: rgba(0,0,0,0.06); padding: 0.6rem; border-radius: 0.75rem;">
-                        <span style="font-size: 9px; font-weight: bold; opacity: 0.6; display: block;" data-i18n="gross">ΜΙΚΤΑ</span>
-                        <span id="dashGross" style="font-size: 0.8rem; font-weight: 900; display: block;">0,00 €</span>
-                    </div>
-                    <div style="background-color: rgba(0,0,0,0.06); padding: 0.6rem; border-radius: 0.75rem;">
-                        <span style="font-size: 9px; font-weight: bold; opacity: 0.6; display: block;" data-i18n="expenses">ΕΞΟΔΑ ΟΧΗΜΑΤΟΣ</span>
-                        <span id="dashExp" style="font-size: 0.8rem; font-weight: 900; display: block;">0,00 €</span>
-                    </div>
-                    <div style="background-color: rgba(0,0,0,0.06); padding: 0.6rem; border-radius: 0.75rem;">
-                        <span style="font-size: 9px; font-weight: bold; opacity: 0.6; display: block;" data-i18n="km">ΧΛΜ</span>
-                        <span id="dashKm" style="font-size: 0.8rem; font-weight: 900; display: block;">0 km</span>
-                    </div>
-                </div>
-                <div id="dashShiftCount" style="margin-top: 1rem; font-size: 0.75rem; font-weight: bold; opacity: 0.85; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 0.6rem;">
-                    0 βάρδιες αυτόν τον μήνα
-                </div>
-            </div>
-
-            <div class="driver-id-card">
-                <div>
-                    <span style="font-size: 8px; color: #525252; font-weight: 900; letter-spacing: 0.05em; display: block;" data-i18n="driverLabel">ΟΔΗΓΟΣ</span>
-                    <span id="idCardDriverName" style="font-size: 0.85rem; font-weight: bold; color: #f5f5f5;">-</span>
-                </div>
-                <div style="text-align: center; border-left: 1px solid #1f1f1f; border-right: 1px solid #1f1f1f; padding: 0 1rem;">
-                    <span style="font-size: 8px; color: #525252; font-weight: 900; letter-spacing: 0.05em; display: block;" data-i18n="driverIdLabel">ΚΩΔΙΚΟΣ</span>
-                    <span id="idCardDriverUid" style="font-size: 0.75rem; font-family: monospace; font-weight: bold; color: #eab308;">-</span>
-                </div>
-                <div style="text-align: right;">
-                    <span style="font-size: 8px; color: #525252; font-weight: 900; letter-spacing: 0.05em; display: block;" data-i18n="taxiLabel">ΤΑΞΙ</span>
-                    <span id="idCardTaxiNumber" style="font-size: 0.85rem; font-weight: bold; color: #34d399;">-</span>
-                </div>
-            </div>
-
-            <div>
-                <h3 style="font-size: 0.9rem; font-weight: bold; color: #737373; margin: 0 0 0.75rem 0; padding-left: 4px; text-transform: uppercase;" data-i18n="recentShifts">Πρόσφατες βάρδιες</h3>
-                <div id="recentShiftsList"></div>
-            </div>
-        </div>
-
-        <div id="historyTab" class="hidden" style="display: flex; flex-direction: column; gap: 1rem;">
-            <h2 style="font-size: 1.125rem; font-weight: 900; color: #eab308; margin: 0;" data-i18n="historyTitle">Ιστορικό Διαχείρισης</h2>
-            <div class="flex gap-2">
-                <input type="month" id="statsMonth" class="input-field" style="flex: 1;">
-            </div>
-
-            <div class="charts-wrapper">
-                <div class="chart-box" onclick="openAnalysisModal('sourceBar')">
-                    <span class="chart-title" data-i18n="sourcesComparison">ΣΥΓΚΡΙΣΗ ΠΗΓΩΝ ΕΙΣΠΡΑΞΕΩΝ (€)</span>
-                    <div class="chart-container-line">
-                        <canvas id="sourceBarChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="charts-row-doughnuts">
-                    <div class="chart-box" onclick="openAnalysisModal('earningsPie')">
-                        <span class="chart-title" data-i18n="earningsAnalysis">ΑΝΑΛΥΣΗ ΕΙΣΠΡΑΞΕΩΝ</span>
-                        <div class="chart-container-rel">
-                            <canvas id="analyticsChart"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div class="chart-box" onclick="openAnalysisModal('expensesPie')">
-                        <span class="chart-title" data-i18n="expensesAnalysis">ΑΝΑΛΥΣΗ ΕΞΟΔΩΝ ΟΧΗΜΑΤΟΣ</span>
-                        <div class="chart-container-rel">
-                            <canvas id="expensesChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="chart-box" onclick="openAnalysisModal('trendLine')">
-                    <span class="chart-title" data-i18n="monthlyTrend">ΕΞΕΛΙΞΗ ΜΗΝΑ (ΜΙΚΤΑ VS ΚΑΘΑΡΑ)</span>
-                    <div class="chart-container-line">
-                        <canvas id="trendChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div id="fullHistoryList"></div>
-        </div>
-
-        <div id="settingsTab" class="hidden" style="display: flex; flex-direction: column; gap: 1rem;">
-            <div style="background-color: #050505; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #141414; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);">
-                <h2 style="font-size: 1.125rem; font-weight: 900; color: #eab308; margin: 0 0 1.25rem 0; border-bottom: 1px solid #141414; padding-bottom: 0.5rem;" data-i18n="settingsTitle">⚙️ Ρυθμίσεις Οδηγού</h2>
-                
-                <form id="settingsForm" style="display: flex; flex-direction: column; gap: 1.25rem;">
-                    <div>
-                        <label style="display: block; font-size: 10px; font-weight: bold; color: #525252; margin-bottom: 6px;" data-i18n="driverPercentage">ΠΟΣΟΣΤΟ ΟΔΗΓΟΥ (%)</label>
-                        <input type="number" id="settingPercentage" required class="input-field" min="1" max="100" placeholder="π.χ. 45">
-                        <span style="font-size: 8px; color: #737373; margin-top: 4px; display: block;">Το ποσοστό επί των εισπράξεων που αναλογεί στον οδηγό.</span>
-                    </div>
-
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(23,23,23,0.5); padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.02);">
-                        <div>
-                            <span style="display: block; font-size: 11px; font-weight: bold; color: #f5f5f5;" data-i18n="retentionToggle">Νόμιμες Κρατήσεις / Μισθολόγιο</span>
-                            <span style="font-size: 9px; color: #737373;">Εμφάνιση πεδίου κρατήσεων στη φόρμα της βάρδιας.</span>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="settingRetention">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn-primary" style="margin-top: 1rem;" data-i18n="saveSettings">Αποθήκευση Ρυθμίσεων</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="formTab" class="hidden">
-            <div style="background-color: #050505; padding: 1.25rem; border-radius: 1.5rem; border: 1px solid #141414; display: flex; flex-direction: column; gap: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #141414; padding-bottom: 0.5rem;">
-                    <h2 id="formHeaderTitle" style="font-size: 0.875rem; font-weight: bold; margin: 0;" data-i18n="newShift">📝 Νέα Βάρδια</h2>
-                    <span id="userDisplay" style="font-size: 10px; color: #eab308; background-color: rgba(234,179,8,0.1); padding: 2px 6px; border-radius: 6px; font-weight: bold; font-family: monospace;"></span>
-                </div>
-                
-                <div class="app-card" style="border-color: #262626; background: #0c0c0c; margin-bottom: 0.25rem;">
-                    <span style="font-size: 9px; font-weight: bold; color: #a3a3a3; display: block; margin-bottom: 6px;">⚙️ ΑΥΤΟΜΑΤΗ ΛΗΨΗ ΤΑΞΙΜΕΤΡΟΥ</span>
-                    <div class="grid grid-cols-2 gap-2">
-                        <select id="taximeterBrand" class="input-field" style="padding: 0.5rem; font-size: 0.8rem;">
-                            <option value="generic">Generic / Δοκιμαστικό BLE</option>
-                            <option value="semitron">Semitron (P6B / P6S)</option>
-                            <option value="ics">ICS / Custom Profile</option>
-                            <option value="digitax">Digitax F1</option>
-                        </select>
-                        <button type="button" id="btnConnectTaximeter" class="btn-primary" style="background-color: #262626; color: #eab308; border: 1px solid #eab308; font-size: 11px; padding: 0.5rem;">
-                            🔵 Σύνδεση BLE
-                        </button>
-                    </div>
-                </div>
-
-                <form id="shiftForm" style="display: flex; flex-direction: column; gap: 1rem;">
-                    <input type="hidden" id="editingShiftId" value="">
-
-                    <div>
-                        <label style="display: block; font-size: 9px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="formDate">ΗΜΕΡΟΜΗΝΙΑ</label>
-                        <input type="date" id="date" required class="input-field" style="width: 100%;">
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 9px; font-weight: bold; color: #525252; margin-bottom: 4px;" data-i18n="taximeterLabel">ΤΑΞΙΜΕΤΡΟ (Z) (€)</label>
-                        <input type="number" step="0.01" id="taximetro" required class="input-field" style="color: #eab308; font-weight: bold;">
-                    </div>
-
-                    <div class="km-container">
-                        <div class="km-col">
-                            <div class="km-label-wrapper">
-                                <label style="font-size: 9px; font-weight: bold; color: #525252;" data-i18n="kmStart">ΕΝΑΡΞΗ ΧΛΜ</label>
-                                <span id="autoKmLbl" class="hidden" style="font-size: 7px; color: #34d399; background: rgba(52,211,153,0.1); padding: 1px 3px; border-radius: 4px; font-weight: bold;" data-i18n="auto">ΑΥΤΟΜΑΤΟ</span>
-                            </div>
-                            <input type="number" id="kmStart" tabindex="-1" required class="input-field">
-                        </div>
-                        <div class="km-col">
-                            <div class="km-label-wrapper">
-                                <label style="font-size: 9px; font-weight: bold; color: #525252;" data-i18n="kmEnd">ΛΗΞΗ ΧΛΜ</label>
-                                <span id="liveKmCalculated" style="font-size: 8px; color: #eab308; font-weight: bold;"></span>
-                            </div>
-                            <input type="number" id="kmEnd" required class="input-field">
-                        </div>
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <span style="font-size: 10px; font-weight: bold; color: #525252;" data-i18n="breakdown">ΑΝΑΛΥΤΙΚΕΣ ΕΙΣΠΡΑΞΕΙΣ (ΤΕΛΟΣ ΗΜΕΡΑΣ)</span>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="number" step="0.01" id="metrita" placeholder="💵 ΜΕΤΡΗΤΑ (€)" required class="input-field" style="color: #34d399; font-weight: bold;">
-                            <input type="number" step="0.01" id="kartes" placeholder="💳 POS (€)" class="input-field">
-                            <input type="number" step="0.01" id="freenow" placeholder="📱 FREENOW (€)" class="input-field">
-                            <input type="number" step="0.01" id="uber" placeholder="🚖 UBER (€)" class="input-field">
-                        </div>
-                        <input type="text" id="tips" placeholder="🎁 Τα Tips υπολογίζονται αυτόματα..." readonly class="input-field" style="color: #eab308; font-weight: bold; text-align: center;">
-                    </div>
-
-                    <div id="retentionWrapper" class="app-card" style="border: 1px solid #eab308; background: rgba(234, 179, 8, 0.05); display: none;">
-                        <label for="parakratisi" style="font-size: 9px; font-weight: bold; color: #eab308;">ΠΑΡΑΚΡΑΤΗΣΗ / ΚΡΑΤΗΣΗ ΜΙΣΘΟΛΟΓΙΟΥ (€)</label>
-                        <input type="number" step="0.01" id="parakratisi" value="0" class="input-field" style="color: #fff; font-weight: bold;">
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid #141414; padding-top: 0.75rem;">
-                        <span style="font-size: 10px; font-weight: bold; color: #525252;" data-i18n="operatingExpenses">ΛΕΙΤΟΥΡΓΙΚΑ ΕΞΟΔΑ (ΒΑΡΥΝΟΥΝ ΤΟΝ ΙΔΙΟΚΤΗΤΗ)</span>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="number" step="0.01" id="kausima" placeholder="⛽ Καύσιμα (€)" class="input-field">
-                            <input type="number" step="0.01" id="service" placeholder="🔧 Service (€)" class="input-field">
-                            <input type="number" step="0.01" id="plysimo" placeholder="🧼 Καθαρισμός (€)" class="input-field">
-                            <input type="number" step="0.01" id="allaExoda" placeholder="🎟️ Διόδια / Λοιπά (€)" class="input-field">
-                        </div>
-                    </div>
-
-                    <input type="text" id="notes" placeholder="Σημειώσεις βάρδιας..." class="input-field">
-
-                    <button type="submit" id="saveShiftBtn" class="btn-primary" data-i18n="saveShift">Καταχώρηση Βάρδιας</button>
-                    <button type="button" id="cancelEditBtn" class="hidden input-field" style="background-color: #121212; font-weight: bold; text-align: center; border-color: #1f1f1f; color: #737373;" data-i18n="cancel">Ακύρωση</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <nav id="bottomNav" class="hidden">
-        <button id="showHomeBtn" class="nav-btn active">
-            <svg viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/></svg>
-            <span style="font-size: 9px; letter-spacing: 0.05em;" data-i18n="navHome">ΑΡΧΙΚΗ</span>
-        </button>
-        
-        <button id="floatingAddBtn" class="floating-btn">+</button>
-        
-        <button id="showHistoryBtn" class="nav-btn">
-            <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/></svg>
-            <span style="font-size: 9px; letter-spacing: 0.05em;" data-i18n="navHistory">ΙΣΤΟΡΙΚΟ</span>
-        </button>
-
-        <button id="showSettingsBtn" class="nav-btn">
-            <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
-            <span style="font-size: 9px; letter-spacing: 0.05em;" data-i18n="navSettings">ΡΥΘΜΙΣΕΙΣ</span>
-        </button>
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('tab-home')" id="nav-home" data-i18n="navHome">ΑΡΧΙΚΗ</div>
+        <div class="nav-item" onclick="switchTab('tab-history')" id="nav-history" data-i18n="navHistory">ΙΣΤΟΡΙΚΟ</div>
+        <div class="nav-item" onclick="switchTab('tab-settings')" id="nav-settings" data-i18n="navSettings">⚙️ ΡΥΘΜΙΣΕΙΣ</div>
     </nav>
 
-    <div id="analysisModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeAnalysisModal()">&times;</span>
-            <h3 id="modalTitleText" class="modal-title">Ανάλυση Δεδομένων</h3>
-            <div id="modalAnalysisContent"></div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, updateDoc, query, where, getDocs, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        
-        import { connectAndReadTaximeter } from './bluetooth-taximetro.js';
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyBxIswpC499LRIriixb4x-A45RISwUoBeY",
-          authDomain: "taxifahrer-7f594.firebaseapp.com",
-          projectId: "taxifahrer-7f594",
-          storageBucket: "taxifahrer-7f594.firebasestorage.app",
-          messagingSenderId: "792387417426",
-          appId: "1:792387417426:web:7f98406d4df1956158368b"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUser = null;
-        let userTaxiNumber = "TAXI 0000";
-        let allShiftsGlobal = [];
-        let isLoginMode = true;
-        let currentLang = 'el';
-        
-        // Δυναμικές ρυθμίσεις χρήστη (αποθηκεύονται στο Firestore)
-        let userConfig = {
-            percentage: 0.45,
-            hasRetention: true
-        };
-        
-        let statsChartInstance = null;
-        let expensesChartInstance = null;
-        let trendChartInstance = null;
-        let sourceBarChartInstance = null;
-
-        let cacheStats = { tCash:0, tCards:0, tFree:0, tUber:0, tFuel:0, tService:0, tWash:0, tOtherExp:0, monthGross:0, monthExp:0, monthNet:0, monthKm:0, totalTips:0, shiftCount:0 };
-
+    <script>
+        // --- 1. ΔΕΔΟΜΕΝΑ ΜΕΤΑΦΡΑΣΗΣ (i18n) ---
         const translations = {
             el: {
-                logout: "Έξοδος", authTitle: "Σύνδεση Οδηγού", driverEmail: "EMAIL ΟΔΗΓΟΥ", secretCode: "ΜΥΣΤΙΚΟΣ ΚΩΔΙΚΟΣ",
-                loginBtn: "Είσοδος", registerBtn: "Εγγραφή", noAccount: "Δεν έχετε λογαριασμό;", createAccount: "Δημιουργία λογαριασμού",
-                loginHere: "Σύνδεση εδώ", createTitle: "Δημιουργία Λογαριασμού", netMonth: "ΚΑΘΑΡΑ ΜΗΝΑ", gross: "ΜΙΚΤΑ",
-                expenses: "ΕΞΟΔΑ ΟΧΗΜΑΤΟΣ", km: "ΧΛΜ", recentShifts: "Πρόσφατες βάρδιες", historyTitle: "Ιστορικό Διαχείρισης",
-                newShift: "📝 Νέα Βάρδια", formDate: "ΗΜΕΡΟΜΗΝΙΑ", taximeterLabel: "ΤΑΞΙΜΕΤΡΟ (Z) (€)", kmStart: "ΕΝΑΡΞΗ ΧΛΜ", 
-                kmEnd: "ΛΗΞΗ ΧΛΜ", auto: "ΑΥΤΟΜΑΤΟ", breakdown: "ΑΝΑΛΥΤΙΚΕΣ ΕΙΣΠΡΑΞΕΙΣ (ΤΕΛΟΣ ΗΜΕΡΑΣ)", operatingExpenses: "ΛΕΙΤΟΥΡΓΙΚΑ ΕΞΟΔΑ (ΒΑΡΥΝΟΥΝ ΤΟΝ ΙΔΙΟΚΤΗΤΗ)",
-                saveShift: "Καταχώρηση Βάρδιας", save: "Αποθήκευση", cancel: "Ακύρωση", navHome: "ΑΡΧΙΚΗ", navHistory: "ΙΣΤΟΡΙΚΟ", navSettings: "ΡΥΘΜΙΣΕΙΣ",
-                settingsTitle: "⚙️ Ρυθμίσεις Οδηγού", driverPercentage: "ΠΟΣΟΣΤΟ ΟΔΗΓΟΥ (%)", retentionToggle: "Νόμιμες Κρατήσεις / Μισθολόγιο", saveSettings: "Αποθήκευση Ρυθμίσεων",
-                editBtn: "Διόρθωση", shiftCountText: "βάρδιες αυτόν τον μήνα", editShiftTitle: "Διόρθωση Βάρδιας",
-                cash: "Μετρητά", cards: "POS", free: "FreeNow", earningsAnalysis: "ΑΝΑΛΥΣΗ ΕΙΣΠΡΑΞΕΩΝ", expensesAnalysis: "ΑΝΑΛΥΣΗ ΕΞΟΔΩΝ",
-                monthlyTrend: "ΕΞΕΛΙΞΗ ΜΗΝΑ (ΜΙΚΤΑ VS ΚΑΘΑΡΑ)", driverLabel: "ΟΔΗΓΟΣ", driverIdLabel: "ΚΩΔΙΚΟΣ", taxiLabel: "ΤΑΞΙ", taxiNumLabel: "ΑΡΙΘΜΟΣ ΤΑΞΙ (Πινακίδα/Νούμερο)",
-                fuel: "Καύσιμα", service: "Service", wash: "Καθαρισμός", otherExp: "Λοιπά", grossLabel: "Μικτά", netLabel: "Καθαρά",
-                sourcesComparison: "ΣΥΓΚΡΙΣΗ ΠΗΓΩΝ ΕΙΣΠΡΑΞΕΩΝ (€)", totalTipsLabel: "Συνολικά Tips",
-                phCash: "💵 ΜΕΤΡΗΤΑ (€)", phNotes: "Σημειώσεις βάρδιας...",
-                months: ["Ιανουάριος", "Φεβρουάριος", "Μάρτιος", "Απρίλιος", "Μάιος", "Ιούνιος", "Ιούλιος", "Αύγουστος", "Σεπτέμβριος", "Οκτώβριος", "Νοέμβριος", "Δεκέμβριος"]
+                appTitle: "Ταξί - Διαχείριση Βάρδιας",
+                shiftEntry: "Καταχώρηση Βάρδιας",
+                grossRevenue: "Τζίρος / Εισπράξεις (€)",
+                dailyDeduction: "Ημερήσια Παρακράτηση (€)",
+                liveCalculation: "Υπολογισμός (βάσει του ποσοστού σου):",
+                yourShare: "Το μερίδιό σου: ",
+                netProfit: "Καθαρό Κέρδος (μετά τις κρατήσεις): ",
+                saveShift: "Αποθήκευση Βάρδιας",
+                monthlyClearance: "Εκκαθάριση Μήνα",
+                totalDeductionsThisMonth: "Συνολικές Κρατήσεις Μήνα: ",
+                returnedByOwner: "Επιστροφή από Ιδιοκτήτη (€)",
+                finalBalance: "Τελικό Υπόλοιπο: ",
+                shiftHistory: "Ιστορικό Βαρδιών",
+                clearHistoryBtn: "Διαγραφή Ιστορικού",
+                driverSettings: "⚙️ Ρυθμίσεις Οδηγού",
+                language: "Γλώσσα (Language)",
+                driverPercentageSetting: "Ποσοστό Οδηγού (%)",
+                autoTaximeter: "Αυτόματη Λήψη Ταξίμετρου",
+                enableDeductions: "Ενεργοποίηση Κρατήσεων (Μισθολόγιο)",
+                saveSettingsBtn: "Αποθήκευση Ρυθμίσεων",
+                navHome: "ΑΡΧΙΚΗ",
+                navHistory: "ΙΣΤΟΡΙΚΟ",
+                navSettings: "⚙️ ΡΥΘΜΙΣΕΙΣ",
+                shiftText: "Βάρδια",
+                grossText: "Τζίρος",
+                deductionText: "Κράτηση",
+                netText: "Καθαρά"
             },
             en: {
-                logout: "Logout", authTitle: "Driver Login", driverEmail: "DRIVER EMAIL", secretCode: "SECRET CODE",
-                loginBtn: "Login", registerBtn: "Register", noAccount: "Don't have an account?", createAccount: "Create account",
-                loginHere: "Login here", createTitle: "Create Account", netMonth: "MONTH NET", gross: "GROSS",
-                expenses: "VEHICLE EXPENSES", km: "KM", recentShifts: "Recent Shifts", historyTitle: "Management History",
-                newShift: "📝 New Shift", formDate: "DATE", taximeterLabel: "TAXIMETER (Z) (€)", kmStart: "START KM", 
-                kmEnd: "END KM", auto: "AUTO", breakdown: "DETAILED RECEIPTS (END OF DAY)", operatingExpenses: "OPERATING EXPENSES (OWNER'S COST)",
-                saveShift: "Save Shift", save: "Save", cancel: "Cancel", navHome: "HOME", navHistory: "HISTORY", navSettings: "SETTINGS",
-                settingsTitle: "⚙️ Driver Settings", driverPercentage: "DRIVER PERCENTAGE (%)", retentionToggle: "Legal Retentions / Wage", saveSettings: "Save Settings",
-                editBtn: "Edit", shiftCountText: "shifts this month", editShiftTitle: "Edit Shift",
-                cash: "Cash", cards: "POS", free: "FreeNow", earningsAnalysis: "EARNINGS ANALYSIS", expensesAnalysis: "EXPENSES ANALYSIS",
-                monthlyTrend: "MONTHLY TREND (GROSS VS NET)", driverLabel: "DRIVER", driverIdLabel: "CODE", taxiLabel: "TAXI", taxiNumLabel: "TAXI NUMBER (Plate/ID)",
-                fuel: "Fuel", service: "Service", wash: "Cleaning", otherExp: "Other", grossLabel: "Gross", netLabel: "Net",
-                sourcesComparison: "REVENUE SOURCES COMPARISON (€)", totalTipsLabel: "Total Tips",
-                phCash: "💵 CASH (€)", phNotes: "Shift notes...",
-                months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-            },
-            de: {
-                logout: "Abmelden", authTitle: "Fahrer-Login", driverEmail: "FAHRER-EMAIL", secretCode: "GEHEIMCODE",
-                loginBtn: "Einloggen", registerBtn: "Registrieren", noAccount: "Kein Konto?", createAccount: "Konto erstellen",
-                loginHere: "Hier einloggen", createTitle: "Konto Erstellen", netMonth: "MONATSNETTO", gross: "BRUTTO",
-                expenses: "FAHRZEUGKOSTEN", km: "KM", recentShifts: "Aktuelle Schichten", historyTitle: "Verwaltungshistorie",
-                newShift: "📝 Neue Schicht", formDate: "DATUM", taximeterLabel: "TAXAMETER (Z) (€)", kmStart: "START KM", 
-                kmEnd: "END KM", auto: "AUTO", breakdown: "DETAILLIERTE EINNAHMEN (TAGESENDE)", operatingExpenses: "BETRIEBSKOSTEN (ZULASTEN EIGENTÜMER)",
-                saveShift: "Schicht Speichern", save: "Speichern", cancel: "Abbrechen", navHome: "HAUPTSEITE", navHistory: "HISTORIE", navSettings: "EINSTELLUNGEN",
-                settingsTitle: "⚙️ Fahrer-Einstellungen", driverPercentage: "FAHRERANTEIL (%)", retentionToggle: "Gesetzliche Abzüge / Lohn", saveSettings: "Einstellungen Speichern",
-                editBtn: "Bearbeiten", shiftCountText: "Schichten in diesem Monat", editShiftTitle: "Schicht Bearbeiten",
-                cash: "Bargeld", cards: "POS", free: "FreeNow", earningsAnalysis: "EINNAHMEN-ANALYSE", expensesAnalysis: "AUSGABEN-ANALYSE",
-                monthlyTrend: "MONATSENTWICKLUNG (BRUTTO VS NETTO)", driverLabel: "FAHRER", driverIdLabel: "CODE", taxiLabel: "TAXI", taxiNumLabel: "TAXINUMMER (Kennzeichen/ID)",
-                fuel: "Kraftstoff", service: "Wartung", wash: "Reinigung", otherExp: "Sonstiges", grossLabel: "Brutto", netLabel: "Netto",
-                sourcesComparison: "EINNAHMENQUELLEN VERGLEICH (€)", totalTipsLabel: "Gesamt Trinkgeld",
-                phCash: "💵 BARGELD (€)", phNotes: "Schichtnotizen...",
-                months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+                appTitle: "Taxi - Shift Manager",
+                shiftEntry: "Shift Entry",
+                grossRevenue: "Gross Revenue (€)",
+                dailyDeduction: "Daily Deduction (€)",
+                liveCalculation: "Calculation (based on your %):",
+                yourShare: "Your Share: ",
+                netProfit: "Net Profit (after deductions): ",
+                saveShift: "Save Shift",
+                monthlyClearance: "Monthly Clearance",
+                totalDeductionsThisMonth: "Total Deductions this Month: ",
+                returnedByOwner: "Returned by Owner (€)",
+                finalBalance: "Final Balance: ",
+                shiftHistory: "Shift History",
+                clearHistoryBtn: "Clear History",
+                driverSettings: "⚙️ Driver Settings",
+                language: "Language (Γλώσσα)",
+                driverPercentageSetting: "Driver Percentage (%)",
+                autoTaximeter: "Auto Taximeter (Bluetooth)",
+                enableDeductions: "Enable Deductions / Payroll",
+                saveSettingsBtn: "Save Settings",
+                navHome: "HOME",
+                navHistory: "HISTORY",
+                navSettings: "⚙️ SETTINGS",
+                shiftText: "Shift",
+                grossText: "Gross",
+                deductionText: "Deduction",
+                netText: "Net"
             }
         };
 
-        const authScreen = document.getElementById('authScreen');
-        const mainApp = document.getElementById('mainApp');
-        const bottomNav = document.getElementById('bottomNav');
-        const homeTab = document.getElementById('homeTab');
-        const historyTab = document.getElementById('historyTab');
-        const formTab = document.getElementById('formTab');
-        const settingsTab = document.getElementById('settingsTab');
-        
-        const showHomeBtn = document.getElementById('showHomeBtn');
-        const showHistoryBtn = document.getElementById('showHistoryBtn');
-        const showSettingsBtn = document.getElementById('showSettingsBtn');
-        const floatingAddBtn = document.getElementById('floatingAddBtn');
-        
-        async function handleBluetoothConnection() {
-            const brand = document.getElementById('taximeterBrand').value;
-            const btn = document.getElementById('btnConnectTaximeter');
-            try {
-                btn.textContent = "⏳ Αναζήτηση...";
-                btn.style.borderColor = "#eab308";
-                btn.style.color = "#eab308";
-                const finalPrice = await connectAndReadTaximeter(brand);
-                if (!isNaN(finalPrice) && finalPrice > 0) {
-                    document.getElementById('taximetro').value = finalPrice.toFixed(2);
-                    btn.textContent = "🟢 Επιτυχία";
-                    btn.style.color = "#34d399";
-                    btn.style.borderColor = "#34d399";
-                    if (typeof updateTipsLive === "function") { updateTipsLive(); }
-                    alert(`Το ποσό λήφθηκε αυτόματα: ${finalPrice.toFixed(2)} €`);
-                }
-            } catch (error) {
-                console.error(error);
-                btn.textContent = "🔴 Αποτυχία";
-                btn.style.color = "#ef4444";
-                btn.style.borderColor = "#ef4444";
-                if (error.name !== 'NotFoundError') { alert("Σφάλμα Bluetooth: " + error.message); }
-            }
-        }
-        document.getElementById('btnConnectTaximeter').addEventListener('click', handleBluetoothConnection);
+        // --- 2. ΑΡΧΙΚΟΠΟΙΗΣΗ & ΡΥΘΜΙΣΕΙΣ ---
+        let currentLang = localStorage.getItem('app_lang') || 'el';
+        let driverPercentage = parseFloat(localStorage.getItem('app_percentage')) || 45;
+        let deductionsEnabled = localStorage.getItem('app_deductions') === 'true';
 
-        function initKeyboardEngine() {
-            const allInputs = document.querySelectorAll('input, select, textarea');
-            allInputs.forEach(input => {
-                input.addEventListener('focus', () => {
-                    bottomNav.classList.add('nav-hidden');
-                    setTimeout(() => { input.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 80);
-                });
-                input.addEventListener('blur', () => { bottomNav.classList.remove('nav-hidden'); });
-            });
+        window.onload = () => {
+            loadSettingsToUI();
+            toggleDeductionsUI();
+            updateHistoryUI();
+            applyTranslations();
+        };
 
-            document.getElementById('shiftForm').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.keyCode === 13) {
-                    if (e.target.id === 'notes' || e.target.type === 'submit') return;
-                    e.preventDefault();
-                    if (e.target.id === 'date') document.getElementById('taximetro').focus();
-                    else if (e.target.id === 'taximetro') document.getElementById('kmEnd').focus();
-                    else if (e.target.id === 'kmEnd') document.getElementById('metrita').focus();
-                    else if (e.target.id === 'metrita') document.getElementById('kartes').focus();
-                    else if (e.target.id === 'kartes') document.getElementById('freenow').focus();
-                    else if (e.target.id === 'freenow') document.getElementById('uber').focus();
-                    else if (e.target.id === 'uber') document.getElementById('parakratisi').focus();
-                    else if (e.target.id === 'parakratisi') document.getElementById('kausima').focus();
-                    else if (e.target.id === 'kausima') document.getElementById('service').focus();
-                    else if (e.target.id === 'service') document.getElementById('plysimo').focus();
-                    else if (e.target.id === 'plysimo') document.getElementById('allaExoda').focus();
-                    else if (e.target.id === 'allaExoda') document.getElementById('notes').focus();
-                }
-            });
+        function loadSettingsToUI() {
+            document.getElementById('setting-lang').value = currentLang;
+            document.getElementById('setting-percentage').value = driverPercentage;
+            document.getElementById('setting-deductions').checked = deductionsEnabled;
+            document.getElementById('setting-bluetooth').checked = localStorage.getItem('app_bluetooth') === 'true';
         }
 
-        document.getElementById('authForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-            const taxiNo = document.getElementById('authTaxiNumber').value.trim().toUpperCase() || "TAXI 0000";
-            
-            try {
-                if (isLoginMode) {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } else {
-                    const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    await setDoc(doc(db, "users", cred.user.uid), { 
-                        email, 
-                        taxiNumber: taxiNo, 
-                        createdAt: new Date(),
-                        percentage: 0.45,
-                        hasRetention: true
-                    });
-                    alert("Ο λογαριασμός δημιουργήθηκε!");
-                }
-            } catch (error) { alert("Σφάλμα σύνδεσης: " + error.message); }
-        });
+        function saveSettings() {
+            currentLang = document.getElementById('setting-lang').value;
+            driverPercentage = parseFloat(document.getElementById('setting-percentage').value) || 45;
+            deductionsEnabled = document.getElementById('setting-deductions').checked;
+            let bluetoothEnabled = document.getElementById('setting-bluetooth').checked;
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                authScreen.classList.add('hidden');
-                mainApp.classList.remove('hidden');
-                bottomNav.classList.remove('hidden');
-                
-                const driverName = user.email.split('@')[0].toUpperCase();
-                document.getElementById('userDisplay').textContent = driverName;
-                document.getElementById('idCardDriverName').textContent = driverName;
-                document.getElementById('idCardDriverUid').textContent = user.uid.substring(0, 7).toUpperCase();
-                
-                try {
-                    const userDoc = await getDoc(doc(db, "users", user.uid));
-                    if(userDoc.exists()) {
-                        const data = userDoc.data();
-                        userTaxiNumber = data.taxiNumber || "TAXI 0000";
-                        userConfig.percentage = data.percentage !== undefined ? data.percentage : 0.45;
-                        userConfig.hasRetention = data.hasRetention !== undefined ? data.hasRetention : true;
-                    }
-                } catch(e) { userTaxiNumber = "TAXI 0000"; }
-                
-                document.getElementById('idCardTaxiNumber').textContent = userTaxiNumber;
-                
-                // Ενημέρωση UI Settings
-                document.getElementById('settingPercentage').value = Math.round(userConfig.percentage * 100);
-                document.getElementById('settingRetention').checked = userConfig.hasRetention;
-                document.getElementById('retentionWrapper').style.display = userConfig.hasRetention ? 'block' : 'none';
+            localStorage.setItem('app_lang', currentLang);
+            localStorage.setItem('app_percentage', driverPercentage);
+            localStorage.setItem('app_deductions', deductionsEnabled);
+            localStorage.setItem('app_bluetooth', bluetoothEnabled);
 
-                applyTranslations();
-                initKeyboardEngine();
-                await fetchShiftsOnDemand();
-            } else {
-                currentUser = null;
-                authScreen.classList.remove('hidden');
-                mainApp.classList.add('hidden');
-                bottomNav.classList.add('hidden');
-            }
-        });
-        
-        // Αποθήκευση Ρυθμίσεων
-        document.getElementById('settingsForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const perc = parseFloat(document.getElementById('settingPercentage').value) / 100;
-            const ret = document.getElementById('settingRetention').checked;
+            toggleDeductionsUI();
+            calculateLive(); 
+            applyTranslations();
+            alert(currentLang === 'el' ? "Οι ρυθμίσεις αποθηκεύτηκαν!" : "Settings saved!");
+        }
+
+        function toggleDeductionsUI() {
+            document.getElementById('deductions-container').style.display = deductionsEnabled ? 'block' : 'none';
+        }
+
+        // --- 3. ΠΛΟΗΓΗΣΗ (TABS) ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             
-            try {
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    percentage: perc,
-                    hasRetention: ret
-                });
-                userConfig.percentage = perc;
-                userConfig.hasRetention = ret;
-                document.getElementById('retentionWrapper').style.display = ret ? 'block' : 'none';
-                alert("Οι ρυθμίσεις αποθηκεύτηκαν!");
-            } catch (error) {
-                alert("Σφάλμα αποθήκευσης ρυθμίσεων: " + error.message);
+            document.getElementById(tabId).classList.add('active');
+            
+            // Highlight nav
+            if(tabId === 'tab-home') document.getElementById('nav-home').classList.add('active');
+            if(tabId === 'tab-history') document.getElementById('nav-history').classList.add('active');
+            if(tabId === 'tab-settings') document.getElementById('nav-settings').classList.add('active');
+        }
+
+        // --- 4. ΥΠΟΛΟΓΙΣΜΟΙ ΒΑΡΔΙΑΣ ---
+        function calculateLive() {
+            let gross = parseFloat(document.getElementById('input-gross').value) || 0;
+            let deduction = deductionsEnabled ? (parseFloat(document.getElementById('input-deduction').value) || 0) : 0;
+            
+            // Αντικειμενικός μαθηματικός υπολογισμός του μεριδίου βάσει ποσοστού
+            let share = gross * (driverPercentage / 100);
+            let net = share - deduction;
+
+            document.getElementById('calc-share').innerText = share.toFixed(2);
+            document.getElementById('calc-net').innerText = net.toFixed(2);
+        }
+
+        function saveShift() {
+            let gross = parseFloat(document.getElementById('input-gross').value) || 0;
+            if (gross <= 0) return;
+
+            let deduction = deductionsEnabled ? (parseFloat(document.getElementById('input-deduction').value) || 0) : 0;
+            let share = gross * (driverPercentage / 100);
+            let net = share - deduction;
+            let date = new Date().toLocaleDateString();
+
+            let shiftData = { date, gross, deduction, net };
+            
+            let history = JSON.parse(localStorage.getItem('app_history')) || [];
+            history.push(shiftData);
+            localStorage.setItem('app_history', JSON.stringify(history));
+
+            // Καθαρισμός φόρμας
+            document.getElementById('input-gross').value = '';
+            document.getElementById('input-deduction').value = '';
+            calculateLive();
+            
+            updateHistoryUI();
+            alert(currentLang === 'el' ? "Η βάρδια αποθηκεύτηκε!" : "Shift saved!");
+        }
+
+        // --- 5. ΙΣΤΟΡΙΚΟ & ΕΚΚΑΘΑΡΙΣΗ ---
+        function updateHistoryUI() {
+            let history = JSON.parse(localStorage.getItem('app_history')) || [];
+            let listHTML = '';
+            let totalDeducted = 0;
+
+            history.reverse().forEach((shift, index) => {
+                totalDeducted += shift.deduction;
+                listHTML += `
+                    <div class="history-item">
+                        <strong><span data-i18n="shiftText">Βάρδια</span>: ${shift.date}</strong><br>
+                        <span data-i18n="grossText">Τζίρος</span>: ${shift.gross.toFixed(2)}€ | 
+                        <span data-i18n="deductionText">Κράτηση</span>: ${shift.deduction.toFixed(2)}€ <br>
+                        <span data-i18n="netText">Καθαρά</span>: <strong>${shift.net.toFixed(2)}€</strong>
+                    </div>
+                `;
+            });
+
+            document.getElementById('history-list').innerHTML = listHTML;
+            document.getElementById('total-deducted').innerText = totalDeducted.toFixed(2);
+            
+            calculateClearance();
+            applyTranslations(); // Σημαντικό: Καλούμε τις μεταφράσεις αφού δημιουργήσαμε δυναμικό HTML
+        }
+
+        function calculateClearance() {
+            let totalDeducted = parseFloat(document.getElementById('total-deducted').innerText) || 0;
+            let returned = parseFloat(document.getElementById('input-return').value) || 0;
+            
+            // Το υπόλοιπο είναι η επιστροφή μείον τα συνολικά κρατηθέντα 
+            // Αν το ποσό είναι αρνητικό σημαίνει ότι τα παρακρατηθέντα υπερκαλύπτουν την επιστροφή.
+            let balance = returned - totalDeducted;
+            
+            let balanceEl = document.getElementById('clearance-balance');
+            balanceEl.innerText = balance.toFixed(2);
+            balanceEl.style.color = balance >= 0 ? "var(--success)" : "var(--danger)";
+        }
+
+        function clearHistory() {
+            if(confirm(currentLang === 'el' ? "Σίγουρα θέλεις να διαγράψεις το ιστορικό;" : "Are you sure you want to clear history?")) {
+                localStorage.removeItem('app_history');
+                document.getElementById('input-return').value = '';
+                updateHistoryUI();
             }
-        });
+        }
+
+        // --- 6. ΣΥΣΤΗΜΑ ΜΕΤΑΦΡΑΣΗΣ ---
+        function changeLanguage() {
+            currentLang = document.getElementById('setting-lang').value;
+            applyTranslations();
+        }
 
         function applyTranslations() {
-            const t = translations[currentLang] || translations['el'];
-            document.querySelectorAll('[data-i18n]').forEach(el => {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                const text = t[key];
-                if (text) { el.textContent = text; }
-            });
-            const inputMetrita = document.getElementById('metrita');
-            const inputNotes = document.getElementById('notes');
-            if (inputMetrita && t.phCash) inputMetrita.placeholder = t.phCash;
-            if (inputNotes && t.phNotes) inputNotes.placeholder = t.phNotes;
-            const saveBtn = document.getElementById('saveShiftBtn');
-            const isEditing = document.getElementById('editingShiftId').value !== "";
-            if (saveBtn) { saveBtn.textContent = isEditing ? t.save : t.saveShift; }
-            const formHeader = document.getElementById('formHeaderTitle');
-            if (formHeader) { formHeader.textContent = isEditing ? t.editShiftTitle : t.newShift; }
-        }
-
-        document.getElementById('langSelect').addEventListener('change', function(e) {
-            currentLang = e.target.value;
-            applyTranslations();
-            renderDashboardAndLists();
-        });
-
-        document.getElementById('kmStart').addEventListener('input', calculateLiveKm);
-        document.getElementById('kmEnd').addEventListener('input', calculateLiveKm);
-        function calculateLiveKm() {
-            const kmStart = parseInt(document.getElementById('kmStart').value) || 0;
-            const kmEnd = parseInt(document.getElementById('kmEnd').value) || 0;
-            const liveLbl = document.getElementById('liveKmCalculated');
-            if (kmEnd > kmStart) { liveLbl.textContent = `+${kmEnd - kmStart} KM`; liveLbl.style.color = "#34d399"; }
-            else { liveLbl.textContent = ""; }
-        }
-
-        function routeTo(tab) {
-            homeTab.classList.add('hidden');
-            historyTab.classList.add('hidden');
-            formTab.classList.add('hidden');
-            settingsTab.classList.add('hidden');
-            showHomeBtn.classList.remove('active');
-            showHistoryBtn.classList.remove('active');
-            showSettingsBtn.classList.remove('active');
-            
-            if(tab === 'home') { homeTab.classList.remove('hidden'); showHomeBtn.classList.add('active'); }
-            else if(tab === 'history') { historyTab.classList.remove('hidden'); showHistoryBtn.classList.add('active'); }
-            else if(tab === 'settings') { settingsTab.classList.remove('hidden'); showSettingsBtn.classList.add('active'); }
-            else if(tab === 'form') { formTab.classList.remove('hidden'); }
-        }
-
-        showHomeBtn.addEventListener('click', () => { routeTo('home'); renderDashboardAndLists(); });
-        showHistoryBtn.addEventListener('click', () => { routeTo('history'); renderDashboardAndLists(); });
-        showSettingsBtn.addEventListener('click', () => { routeTo('settings'); });
-        
-        floatingAddBtn.addEventListener('click', () => { 
-            resetFormState(); 
-            routeTo('form'); 
-            setTimeout(() => { document.getElementById('taximetro').focus(); }, 150);
-        });
-
-        document.getElementById('toggleAuth').addEventListener('click', function() {
-            isLoginMode = !isLoginMode;
-            const t = translations[currentLang] || translations['el'];
-            document.getElementById('authTitle').textContent = isLoginMode ? t.authTitle : t.createTitle;
-            document.getElementById('authSubmitBtn').textContent = isLoginMode ? t.loginBtn : t.registerBtn;
-            this.textContent = isLoginMode ? t.createAccount : t.loginHere;
-            document.getElementById('taxiIdFieldWrapper').classList.toggle('hidden', isLoginMode);
-        });
-
-        const initDate = new Date();
-        document.getElementById('date').valueAsDate = initDate;
-        document.getElementById('statsMonth').value = `${initDate.getFullYear()}-${String(initDate.getMonth() + 1).padStart(2, '0')}`;
-
-        async function fetchShiftsOnDemand() {
-            if (!currentUser) return;
-            try {
-                const q = query(collection(db, "pro_shifts"), where("userId", "==", currentUser.uid));
-                const querySnapshot = await getDocs(q);
-                allShiftsGlobal = [];
-                
-                querySnapshot.forEach((doc) => { allShiftsGlobal.push({ id: doc.id, ...doc.data() }); });
-                allShiftsGlobal.sort((a,b) => b.date.localeCompare(a.date));
-
-                if (allShiftsGlobal.length > 0 && !document.getElementById('editingShiftId').value) {
-                    document.getElementById('kmStart').value = allShiftsGlobal[0].kmEnd;
-                    document.getElementById('autoKmLbl').classList.remove('hidden');
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    el.innerText = translations[currentLang][key];
                 }
-                renderDashboardAndLists();
-            } catch(e) { alert("Σφάλμα ανάγνωσης από Firebase: " + e.message); }
-        }
-
-        document.getElementById('shiftForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!currentUser) return;
-
-            const editingId = document.getElementById('editingShiftId').value;
-            const taximetro = parseFloat(document.getElementById('taximetro').value) || 0;
-            const metrita = parseFloat(document.getElementById('metrita').value) || 0;
-            const kartes = parseFloat(document.getElementById('kartes').value) || 0;
-            const freenow = parseFloat(document.getElementById('freenow').value) || 0;
-            const uber = parseFloat(document.getElementById('uber').value) || 0;
-            const parakratisi = parseFloat(document.getElementById('parakratisi').value) || 0;
-            const kausima = parseFloat(document.getElementById('kausima').value) || 0;
-            const service = parseFloat(document.getElementById('service').value) || 0;
-            const plysimo = parseFloat(document.getElementById('plysimo').value) || 0;
-            const allaExoda = parseFloat(document.getElementById('allaExoda').value) || 0;
-
-            if (parseInt(document.getElementById('kmEnd').value) <= parseInt(document.getElementById('kmStart').value)) {
-                alert("Σφάλμα: Τα χιλιόμετρα λήξης πρέπει να είναι μεγαλύτερα από τα χιλιόμετρα έναρξης.");
-                return;
-            }
-
-            const realIncomes = metrita + kartes + freenow + uber;
-            const υπολογισμέναTips = realIncomes > taximetro ? (realIncomes - taximetro) : 0;
-            const totalExpenses = kausima + service + plysimo + allaExoda;
-
-            // ΣΩΣΤΟΣ ΥΠΟΛΟΓΙΣΜΟΣ ΚΑΘΑΡΟΥ ΚΕΡΔΟΥΣ (ΧΩΡΙΣ ΝΑ ΑΦΑΙΡΟΥΝΤΑΙ ΤΑ ΛΕΙΤΟΥΡΓΙΚΑ ΕΞΟΔΑ ΑΠΟ ΤΗΝ ΤΣΕΠΗ ΤΟΥ ΟΔΗΓΟΥ)
-            const myShare = realIncomes * userConfig.percentage;
-            const finalNet = userConfig.hasRetention ? (myShare - parakratisi) : myShare;
-
-            const shiftData = {
-                date: document.getElementById('date').value,
-                taximetro: taximetro,
-                kmStart: parseInt(document.getElementById('kmStart').value) || 0,
-                kmEnd: parseInt(document.getElementById('kmEnd').value) || 0,
-                totalKm: parseInt(document.getElementById('kmEnd').value) - (parseInt(document.getElementById('kmStart').value) || 0),
-                metrita: metrita,
-                kartes: kartes,
-                freenow: freenow,
-                uber: uber,
-                parakratisi: parakratisi,
-                kausima: kausima,
-                service: service,
-                plysimo: plysimo,
-                allaExoda: allaExoda,
-                userId: currentUser.uid,
-                userEmail: currentUser.email,
-                notes: document.getElementById('notes').value,
-                timestamp: new Date().getTime(),
-                percentageUsed: userConfig.percentage,
-                synolikesEispraxeis: Math.round(taximetro * 100) / 100,
-                tips: Math.round(υπολογισμέναTips * 100) / 100,
-                totalExpenses: Math.round(totalExpenses * 100) / 100,
-                
-                // ΔΙΟΡΘΩΜΕΝΟ: Δεν αφαιρείται πλέον το 'totalExpenses' από τον οδηγό
-                katharoKerdos: Math.round(finalNet * 100) / 100
-            };
-
-            try {
-                if (editingId) { await updateDoc(doc(db, "pro_shifts", editingId), shiftData); } 
-                else { await addDoc(collection(db, "pro_shifts"), shiftData); }
-                alert("Η βάρδια καταχωρήθηκε επιτυχώς!");
-                resetFormState();
-                await fetchShiftsOnDemand();
-                routeTo('home');
-            } catch (error) { alert("ΑΠΟΡΡΙΨΗ: " + error.message); }
-        });
-
-        document.getElementById('statsMonth').addEventListener('change', renderDashboardAndLists);
-
-        function resetFormState() {
-            document.getElementById('editingShiftId').value = "";
-            document.getElementById('shiftForm').reset();
-            document.getElementById('parakratisi').value = "0";
-            document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('cancelEditBtn').classList.add('hidden');
-            document.getElementById('saveShiftBtn').textContent = "Καταχώρηση Βάρδιας";
-            document.getElementById('formHeaderTitle').textContent = "📝 Νέα Βάρδια";
-            if(allShiftsGlobal.length > 0) {
-                document.getElementById('kmStart').value = allShiftsGlobal[0].kmEnd;
-                document.getElementById('autoKmLbl').classList.remove('hidden');
-            }
-            const btn = document.getElementById('btnConnectTaximeter');
-            btn.textContent = "🔵 Σύνδεση BLE";
-            btn.style.color = "#eab308";
-            btn.style.borderColor = "#eab308";
-        }
-
-        window.startEditShift = function(id) {
-            const shift = allShiftsGlobal.find(s => s.id === id);
-            if (!shift) return;
-            document.getElementById('editingShiftId').value = shift.id;
-            document.getElementById('date').value = shift.date;
-            document.getElementById('taximetro').value = shift.taximetro;
-            document.getElementById('kmStart').value = shift.kmStart;
-            document.getElementById('kmEnd').value = shift.kmEnd;
-            document.getElementById('metrita').value = shift.metrita;
-            document.getElementById('kartes').value = shift.kartes;
-            document.getElementById('freenow').value = shift.freenow;
-            document.getElementById('uber').value = shift.uber || 0;
-            document.getElementById('tips').value = "Υπολογίζεται αυτόματα...";
-            document.getElementById('parakratisi').value = shift.parakratisi || 0;
-            document.getElementById('kausima').value = shift.kausima;
-            document.getElementById('service').value = shift.service;
-            document.getElementById('plysimo').value = shift.plysimo;
-            document.getElementById('allaExoda').value = shift.allaExoda;
-            document.getElementById('notes').value = shift.notes || "";
-            document.getElementById('cancelEditBtn').classList.remove('hidden');
-            applyTranslations();
-            calculateLiveKm();
-            routeTo('form');
-        };
-
-        function renderDashboardAndLists() {
-            const selectedMonth = document.getElementById('statsMonth').value;
-            const t = translations[currentLang] || translations['el'];
-
-            if(selectedMonth) {
-                const parts = selectedMonth.split('-');
-                document.getElementById('monthHeaderTitle').textContent = `${t.months[parseInt(parts[1])-1]} ${parts[0]}`;
-            }
-
-            cacheStats = { tCash:0, tCards:0, tFree:0, tUber:0, tFuel:0, tService:0, tWash:0, tOtherExp:0, monthGross:0, monthExp:0, monthNet:0, monthKm:0, totalTips:0, shiftCount:0 };
-            let trendLabels = []; let trendGrossData = []; let trendNetData = [];
-
-            const recentList = document.getElementById('recentShiftsList');
-            const fullList = document.getElementById('fullHistoryList');
-            if(recentList) recentList.innerHTML = "";
-            if(fullList) fullList.innerHTML = "";
-
-            const chronologicalShifts = [...allShiftsGlobal].reverse();
-            chronologicalShifts.forEach((data) => {
-                if (selectedMonth && !data.date.startsWith(selectedMonth)) return;
-                try { const parts = data.date.split('-'); trendLabels.push(`${parts[2]}/${parts[1]}`); } catch(e) { trendLabels.push(data.date); }
-                trendGrossData.push(data.synolikesEispraxeis || 0);
-                trendNetData.push(data.katharoKerdos || 0);
-            });
-
-            allShiftsGlobal.forEach((data) => {
-                if (selectedMonth && !data.date.startsWith(selectedMonth)) return;
-
-                cacheStats.monthGross += data.synolikesEispraxeis || 0;
-                cacheStats.monthExp += data.totalExpenses || 0;
-                cacheStats.monthNet += data.katharoKerdos || 0;
-                cacheStats.monthKm += data.totalKm || 0;
-                cacheStats.totalTips += data.tips || 0;
-                cacheStats.shiftCount++;
-
-                cacheStats.tCash += data.metrita || 0;
-                cacheStats.tCards += data.kartes || 0;
-                cacheStats.tFree += data.freenow || 0;
-                cacheStats.tUber += data.uber || 0;
-                cacheStats.tFuel += data.kausima || 0;
-                cacheStats.tService += data.service || 0;
-                cacheStats.tWash += data.plysimo || 0;
-                cacheStats.tOtherExp += data.allaExoda || 0;
-
-                let dateDisplay = data.date;
-                try { const parts = data.date.split('-'); dateDisplay = `${parts[2]}/${parts[1]}/${parts[0]}`; } catch(e) {}
-
-                const cardHtml = `
-                    <div class="app-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                            <div>
-                                <span style="font-size: 10px; color: #525252; font-weight: bold; display: block; margin-bottom: 2px;">${dateDisplay}</span>
-                                <span style="font-size: 1.35rem; font-weight: 900; color: #eab308; font-family: monospace;">${(data.katharoKerdos || 0).toFixed(2)} €</span>
-                            </div>
-                            <div style="text-align: right;">
-                                <span style="font-size: 8px; font-weight: bold; color: #525252; display: block;">${t.gross}</span>
-                                <span style="font-size: 0.8rem; font-weight: bold; color: #d4d4d4; display: block;">${(data.synolikesEispraxeis || 0).toFixed(2)} €</span>
-                                <span style="font-size: 10px; font-weight: 500; color: #ef4444; display: block; margin-top: 1px;">- ${(data.totalExpenses || 0).toFixed(0)} € (${t.expenses})</span>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-4 gap-1-5" style="margin-top: 10px; border-top: 1px solid #141414; padding-top: 8px; text-align: center;">
-                            <div class="sub-box">
-                                <span style="font-size: 8px; color: #525252; font-weight: bold; display: block;">${t.cash}</span>
-                                <span style="font-size: 10px; font-weight: bold; color: #34d399;">${(data.metrita || 0).toFixed(0)} €</span>
-                            </div>
-                            <div class="sub-box">
-                                <span style="font-size: 8px; color: #525252; font-weight: bold; display: block;">${t.cards}</span>
-                                <span style="font-size: 10px; font-weight: bold; color: #a3a3a3;">${(data.kartes || 0).toFixed(0)} €</span>
-                            </div>
-                            <div class="sub-box">
-                                <span style="font-size: 8px; color: #525252; font-weight: bold; display: block;">🎁 TIPS</span>
-                                <span style="font-size: 10px; font-weight: bold; color: #eab308;">${(data.tips || 0).toFixed(0)} €</span>
-                            </div>
-                            <div class="sub-box">
-                                <span style="font-size: 8px; color: #525252; font-weight: bold; display: block;">${t.km}</span>
-                                <span style="font-size: 10px; font-weight: bold; color: #a3a3a3;">${data.totalKm || 0} km</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: flex-end; margin-top: 10px; border-top: 1px solid #141414; padding-top: 8px;">
-                            <button onclick="startEditShift('${data.id}')" style="background: none; border: none; color: #737373; font-size: 11px; font-weight: bold; cursor: pointer;">${t.editBtn}</button>
-                        </div>
-                    </div>`;
-
-                if (recentList && cacheStats.shiftCount <= 5) recentList.insertAdjacentHTML('beforeend', cardHtml);
-                if (fullList) fullList.insertAdjacentHTML('beforeend', cardHtml);
-            });
-
-            document.getElementById('dashNet').textContent = cacheStats.monthNet.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            document.getElementById('dashGross').textContent = cacheStats.monthGross.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
-            document.getElementById('dashExp').textContent = cacheStats.monthExp.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
-            document.getElementById('dashKm').textContent = (cacheStats.monthKm || 0).toLocaleString('el-GR') + " km";
-            document.getElementById('dashShiftCount').textContent = `${cacheStats.shiftCount} ${t.shiftCountText}`;
-
-            renderSourceBarChart(cacheStats.tCash, cacheStats.tCards, cacheStats.tFree, cacheStats.tUber);
-            renderAnalyticsChart(cacheStats.tCash, cacheStats.tCards, cacheStats.tFree, cacheStats.tUber);
-            renderExpensesChart(cacheStats.tFuel, cacheStats.tService, cacheStats.tWash, cacheStats.tOtherExp);
-            renderTrendChart(trendLabels, trendGrossData, trendNetData);
-        }
-
-        function renderSourceBarChart(cash, cards, freenow, uber) {
-            const canvas = document.getElementById('sourceBarChart'); if(!canvas) return;
-            if (sourceBarChartInstance) sourceBarChartInstance.destroy();
-            sourceBarChartInstance = new Chart(canvas.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: currentLang === 'el' ? ['Μετρητά', 'POS (Κάρτες)', 'FREE NOW', 'Uber'] : ['Cash', 'POS (Cards)', 'FREE NOW', 'Uber'],
-                    datasets: [{ data: [cash, cards, freenow, uber], backgroundColor: ['#34d399', '#eab308', '#d97706', '#60a5fa'], borderRadius: 8, borderWidth: 0 }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#737373', font: { size: 10 } } }, y: { grid: { color: '#141414' }, ticks: { color: '#737373', font: { size: 9 } } } } }
-            });
-        }
-
-        function renderAnalyticsChart(cash, cards, freenow, uber) {
-            const canvas = document.getElementById('analyticsChart'); if(!canvas) return;
-            if (statsChartInstance) statsChartInstance.destroy();
-            const total = cash + cards + freenow + uber;
-            statsChartInstance = new Chart(canvas.getContext('2d'), {
-                type: 'doughnut',
-                data: { labels: ['Cash', 'POS', 'FREE', 'Uber'], datasets: [{ data: total === 0 ? [1] : [cash, cards, freenow, uber], backgroundColor: total === 0 ? ['#1f1f1f'] : ['#34d399', '#eab308', '#d97706', '#60a5fa'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
-            });
-        }
-
-        document.getElementById('metrita').addEventListener('input', updateTipsLive);
-        document.getElementById('kartes').addEventListener('input', updateTipsLive);
-        document.getElementById('freenow').addEventListener('input', updateTipsLive);
-        document.getElementById('uber').addEventListener('input', updateTipsLive);
-        document.getElementById('taximetro').addEventListener('input', updateTipsLive);
-
-        function updateTipsLive() {
-            const taximetro = parseFloat(document.getElementById('taximetro').value) || 0;
-            const metrita = parseFloat(document.getElementById('metrita').value) || 0;
-            const kartes = parseFloat(document.getElementById('kartes').value) || 0;
-            const freenow = parseFloat(document.getElementById('freenow').value) || 0;
-            const uber = parseFloat(document.getElementById('uber').value) || 0;
-
-            const totalReal = metrita + kartes + freenow + uber;
-            const calculatedTips = totalReal > taximetro ? (totalReal - taximetro) : 0;
-            
-            const tipsInput = document.getElementById('tips');
-            if (calculatedTips > 0) {
-                tipsInput.value = `🎁 TIPS: +${calculatedTips.toFixed(2)} €`;
-                tipsInput.style.color = "#eab308";
-            } else {
-                tipsInput.value = "🎁 Tips: 0.00 €";
-                tipsInput.style.color = "#737373";
-            }
-        }
-
-        function renderExpensesChart(fuel, service, wash, other) {
-            const canvas = document.getElementById('expensesChart'); if(!canvas) return;
-            if (expensesChartInstance) expensesChartInstance.destroy();
-            const total = fuel + service + wash + other;
-            expensesChartInstance = new Chart(canvas.getContext('2d'), {
-                type: 'doughnut',
-                data: { labels: currentLang === 'el' ? ['Καύσιμα', 'Service', 'Καθαρισμός', 'Λοιπά'] : ['Fuel', 'Service', 'Wash', 'Other'], datasets: [{ data: total === 0 ? [1] : [fuel, service, wash, other], backgroundColor: total === 0 ? ['#1f1f1f'] : ['#ef4444', '#f97316', '#06b6d4', '#737373'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
-            });
-        }
-
-        function renderTrendChart(labels, grossData, netData) {
-            const canvas = document.getElementById('trendChart'); if(!canvas) return;
-            if (trendChartInstance) trendChartInstance.destroy();
-            const t = translations[currentLang] || translations['el'];
-            trendChartInstance = new Chart(canvas.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: labels.length === 0 ? ['-'] : labels,
-                    datasets: [
-                        { label: t.grossLabel || 'Gross', data: grossData.length === 0 ? [0] : grossData, borderColor: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.1)', borderWidth: 2, tension: 0.3, fill: true },
-                        { label: t.netLabel || 'Net', data: netData.length === 0 ? [0] : netData, borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)', borderWidth: 2, tension: 0.3, fill: true }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, labels: { color: '#737373', font: { size: 9 } } } }, scales: { x: { grid: { color: '#141414' }, ticks: { color: '#525252', font: { size: 9 } } }, y: { grid: { color: '#141414' }, ticks: { color: '#525252', font: { size: 9 } } } } }
-            });
-        }
-
-        window.openAnalysisModal = function(chartType) {
-            const modal = document.getElementById('analysisModal');
-            const titleEl = document.getElementById('modalTitleText');
-            const contentEl = document.getElementById('modalAnalysisContent');
-            let html = "";
-            const totalIncomes = cacheStats.tCash + cacheStats.tCards + cacheStats.tFree + cacheStats.tUber;
-            const totalExpenses = cacheStats.tFuel + cacheStats.tService + cacheStats.tWash + cacheStats.tOtherExp;
-
-            if (chartType === 'sourceBar' || chartType === 'earningsPie') {
-                titleEl.textContent = currentLang === 'el' ? "Ανάλυση Εισπράξεων & Tips" : "Revenue & Tips Analysis";
-                html = `
-                    <div class="analysis-item"><span class="analysis-label">💵 ${currentLang==='el'?'Μετρητά Ταμείου':'Cash Income'}:</span><span class="analysis-value">${cacheStats.tCash.toFixed(2)} €</span></div>
-                    <div class="analysis-item"><span class="analysis-label">💳 POS (${currentLang==='el'?'Κάρτες':'Cards'}):</span><span class="analysis-value">${cacheStats.tCards.toFixed(2)} €</span></div>
-                    <div class="analysis-item"><span class="analysis-label">📱 FREE NOW:</span><span class="analysis-value">${cacheStats.tFree.toFixed(2)} €</span></div>
-                    <div class="analysis-item"><span class="analysis-label">🚖 Uber:</span><span class="analysis-value">${cacheStats.tUber.toFixed(2)} €</span></div>
-                    <div class="analysis-item" style="border-top: 1px dashed #262626; margin-top: 8px;"><span class="analysis-label" style="color:#eab308;">🎁 ${currentLang==='el'?'Συνολικά Tips':'Total Tips'}:</span><span class="analysis-value" style="color:#eab308;">${cacheStats.totalTips.toFixed(2)} €</span></div>
-                    <div class="analysis-item"><span class="analysis-label">📊 ${currentLang==='el'?'Σύνολο (Μαζί με Tips)':'Total (Incl. Tips)'}:</span><span class="analysis-value">${totalIncomes.toFixed(2)} €</span></div>
-                `;
-            } else if (chartType === 'expensesPie') {
-                titleEl.textContent = currentLang === 'el' ? "Ανάλυση Εξόδων Οχήματος" : "Vehicle Expenses Analysis";
-                html = `
-                    <div class="analysis-item"><span class="analysis-label">⛽ ${currentLang==='el'?'Καύσιμα':'Fuel'}:</span><span class="analysis-value">${cacheStats.tFuel.toFixed(2)} € (${totalExpenses > 0 ? ((cacheStats.tFuel/totalExpenses)*100).toFixed(0) : 0}%)</span></div>
-                    <div class="analysis-item"><span class="analysis-label">🔧 Service / ${currentLang==='el'?'Βλάβες':'Repairs'}:</span><span class="analysis-value">${cacheStats.tService.toFixed(2)} €</span></div>
-                    <div class="analysis-item"><span class="analysis-label">🧼 ${currentLang==='el'?'Καθαρισμός (Πλύσιμο)':'Cleaning (Wash)'}:</span><span class="analysis-value">${cacheStats.tWash.toFixed(2)} €</span></div>
-                    <div class="analysis-item"><span class="analysis-label">🎟️ ${currentLang==='el'?'Διόδια & Λοιπά':'Tolls & Other'}:</span><span class="analysis-value">${cacheStats.tOtherExp.toFixed(2)} €</span></div>
-                    <div class="analysis-item" style="border-top: 1px dashed #262626; margin-top: 8px;"><span class="analysis-label" style="color:#ef4444;">📉 ${currentLang==='el'?'Σύνολο Εξόδων Μήνα':'Total Expenses'}:</span><span class="analysis-value" style="color:#ef4444;">${totalExpenses.toFixed(2)} €</span></div>
-                `;
-            } else if (chartType === 'trendLine') {
-                titleEl.textContent = currentLang === 'el' ? "Οικονομική Απόδοση Μήνα" : "Monthly Financial Performance";
-                html = `
-                    <div class="analysis-item"><span class="analysis-label">🚖 ${currentLang==='el'?'Σύνολο Βαρδιών':'Total Shifts'}:</span><span class="analysis-value">${cacheStats.shiftCount} ${currentLang==='el'?'βάρδιες':'shifts'}</span></div>
-                    <div class="analysis-item"><span class="analysis-label">💰 ${currentLang==='el'?'Μικτά Έσοδα (Βάσει Ζ)':'Gross Receipts (Z)'}:</span><span class="analysis-value">${cacheStats.monthGross.toFixed(2)} €</span></div>
-                    <div class="analysis-item"><span class="analysis-label">⛽ ${currentLang==='el'?'Έξοδα Οχήματος (Ιδιοκτήτη)':'Vehicle Expenses'}:</span><span class="analysis-value">${cacheStats.monthExp.toFixed(2)} €</span></div>
-                    <div class="analysis-item" style="border-top: 1px dashed #262626; margin-top: 8px;"><span class="analysis-label" style="color:#34d399;">🏁 ${currentLang==='el'?'Πραγματικά Καθαρά Κέρδη':'Actual Net Profit'}:</span><span class="analysis-value" style="color:#34d399; font-size:1.1rem;">${cacheStats.monthNet.toFixed(2)} €</span></div>
-                `;
-            }
-            contentEl.innerHTML = html; modal.style.display = "flex";
-        };
-
-        window.closeAnalysisModal = function() { document.getElementById('analysisModal').style.display = "none"; };
-        window.onclick = function(event) { const modal = document.getElementById('analysisModal'); if (event.target == modal) { modal.style.display = "none"; } };
-
-    </script>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker Registered!', reg))
-                    .catch(err => console.error('Service Worker Error:', err));
             });
         }
     </script>
