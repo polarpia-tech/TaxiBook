@@ -1,4 +1,4 @@
-const CACHE_NAME = 'taxibook-cache-v2.8.1'; 
+const CACHE_NAME = 'taxibook-cache-v2.9'; 
 const ASSETS = [
   './',
   './index.html',
