@@ -113,7 +113,6 @@
         .analysis-label { color: #a3a3a3; font-weight: bold; }
         .analysis-value { color: #f5f5f5; font-weight: bold; font-family: monospace; }
         
-        /* Pro Badge Styles */
         .pro-badge { background-color: #34d399; color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 5px; }
         .free-badge { background-color: #525252; color: #fff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 5px; }
     </style>
@@ -473,7 +472,6 @@
 
         let currentUser = null;
         let userTaxiNumber = "TAXI 0000";
-        // Νέες μεταβλητές συνδρομής
         let userSubPlan = 'free'; 
         let userSubExpiry = null;
 
@@ -513,10 +511,10 @@
             },
             en: { logout: "Logout", authTitle: "Driver Login", driverEmail: "DRIVER EMAIL", secretCode: "SECRET CODE", loginBtn: "Login", registerBtn: "Register", noAccount: "Don't have an account?", createAccount: "Create account", loginHere: "Login here", createTitle: "Create Account", netMonth: "MONTH NET", gross: "GROSS", expenses: "EXPENSES", km: "KM", recentShifts: "Recent Shifts", historyTitle: "Management History", newShift: "📝 New Shift", formDate: "DATE", taximeterLabel: "TAXIMETER (Z) (€)", kmStart: "START KM", kmEnd: "END KM", auto: "AUTO", breakdown: "DETAILED RECEIPTS (END OF DAY)", operatingExpenses: "OPERATING EXPENSES", saveShift: "Save Shift", save: "Save", cancel: "Cancel / Back", navHome: "HOME", navHistory: "HISTORY", editBtn: "Edit", shiftCountText: "shifts this month", editShiftTitle: "Edit Shift", cash: "Cash", cards: "POS", free: "FreeNow", earningsAnalysis: "EARNINGS ANALYSIS", expensesAnalysis: "EXPENSES ANALYSIS", monthlyTrend: "MONTHLY TREND (GROSS VS NET)", driverLabel: "DRIVER", driverIdLabel: "CODE", taxiLabel: "TAXI", taxiNumLabel: "TAXI NUMBER (Plate/ID)", fuel: "Fuel", service: "Service", wash: "Cleaning", otherExp: "Other", grossLabel: "Gross", netLabel: "Net", sourcesComparison: "REVENUE SOURCES COMPARISON (€)", totalTipsLabel: "Total Tips", phCash: "💵 CASH (€)", phNotes: "Shift notes...", months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], navSettings: "SETTINGS", settingsTitle: "App Settings", autoTaximeterTitle: "⚙️ AUTOMATIC TAXIMETER FETCH", connectBleBtn: "🔵 Connect BLE", percentageLabel: "DRIVER PERCENTAGE (%)", monthlyClearanceTitle: "📊 MONTHLY DRIVER CLEARANCE", clearanceGross: "Total Taximeter (Z):", clearanceShare: "Driver Share:", clearanceTips: "Total Tips:", clearanceExpenses: "Total Expenses (Vehicle):", clearanceNet: "Driver Net Earnings:", clearanceCashHeld: "Driver Cash Held:", clearancePayout: "Final Balance (To Settle):", subTitle: "👑 SUBSCRIPTION STATUS", upgradeBtn: "UPGRADE TO PRO (4.99€/mo)", subLimitReached: "You reached the limit of 15 shifts for the free plan. Upgrade to PRO!", expiresAt: "Expires:", freePlanInfo: "The free plan allows 15 shifts per month.", proPlanInfo: "You have unlimited entries and full access to analytics." },
             de: { logout: "Abmelden", authTitle: "Fahrer-Login", driverEmail: "FAHRER-EMAIL", secretCode: "GEHEIMCODE", loginBtn: "Einloggen", registerBtn: "Registrieren", noAccount: "Kein Konto?", createAccount: "Konto erstellen", loginHere: "Hier einloggen", createTitle: "Konto Erstellen", netMonth: "MONATSNETTO", gross: "BRUTTO", expenses: "AUSGABEN", km: "KM", recentShifts: "Aktuelle Schichten", historyTitle: "Verwaltungshistorie", newShift: "📝 Neue Schicht", formDate: "DATUM", taximeterLabel: "TAXAMETER (Z) (€)", kmStart: "START KM", kmEnd: "END KM", auto: "AUTO", breakdown: "DETAILLIERTE EINNAHMEN (TAGESENDE)", operatingExpenses: "BETRIEBSKOSTEN", saveShift: "Schicht Speichern", save: "Speichern", cancel: "Abbrechen / Zurück", navHome: "HAUPTSEITE", navHistory: "HISTORIE", editBtn: "Bearbeiten", shiftCountText: "Schichten in diesem Monat", editShiftTitle: "Schicht Bearbeiten", cash: "Bargeld", cards: "POS", free: "FreeNow", earningsAnalysis: "EINNAHMEN-ANALYSE", expensesAnalysis: "AUSGABEN-ANALYSE", monthlyTrend: "MONATSENTWICKLUNG (BRUTTO VS NETTO)", driverLabel: "FAHRER", driverIdLabel: "CODE", taxiLabel: "TAXI", taxiNumLabel: "TAXINUMMER (Kennzeichen/ID)", fuel: "Kraftstoff", service: "Wartung", wash: "Reinigung", otherExp: "Sonstiges", grossLabel: "Brutto", netLabel: "Netto", sourcesComparison: "EINNAHMENQUELLEN VERGLEICH (€)", totalTipsLabel: "Gesamt Trinkgeld", phCash: "💵 BARGELD (€)", phNotes: "Schichtnotizen...", months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"], navSettings: "EINSTELLUNGEN", settingsTitle: "App-Einstellungen", autoTaximeterTitle: "⚙️ AUTOMATISCHE TAXAMETER-ABFRAGE", connectBleBtn: "🔵 BLE Verbinden", percentageLabel: "FAHRER-ANTEIL (%)", monthlyClearanceTitle: "📊 MONATLICHE FAHRERABRECHNUNG", clearanceGross: "Taxameter Gesamt (Z):", clearanceShare: "Fahrer-Anteil:", clearanceTips: "Gesamt Trinkgeld:", clearanceExpenses: "Gesamt Ausgaben:", clearanceNet: "Nettoverdienst Fahrer:", clearanceCashHeld: "Barbestand Fahrer:", clearancePayout: "Restguthaben (Abrechnung):", subTitle: "👑 ABO-STATUS", upgradeBtn: "AUF PRO UPGRADEN (4.99€/Mo)", subLimitReached: "Limit von 15 Schichten erreicht. Bitte upgraden!", expiresAt: "Ablauf:", freePlanInfo: "Das kostenlose Abo erlaubt 15 Schichten pro Monat.", proPlanInfo: "Unbegrenzte Einträge und vollen Zugriff auf Statistiken." },
-            tr: { logout: "Çıkış", authTitle: "Sürücü Girişi", driverEmail: "SÜRÜCÜ E-POSTASI", secretCode: "GİZLİ ŞİFRE", loginBtn: "Giriş Yap", registerBtn: "Kayıt Ol", noAccount: "Hesabınız yok mu?", createAccount: "Hesap oluştur", loginHere: "Buradan giriş yapın", createTitle: "Hesap Oluştur", netMonth: "AYLIK NET", gross: "BRÜT", expenses: "GİDERLER", km: "KM", recentShifts: "Son Vardiyalar", historyTitle: "Yönetim Geçmişi", newShift: "📝 Yeni Vardiya", formDate: "TARİH", taximeterLabel: "TAKSMETRE (Z) (€)", kmStart: "BAŞLANGIÇ KM", kmEnd: "BİTİŞ KM", auto: "OTOMATİK", breakdown: "DETAYLI GELİRLER (GÜN SONU)", operatingExpenses: "İŞLETME GİDERLERI", saveShift: "Vardiyayı Kaydet", save: "Kaydet", cancel: "İptal / Geri", navHome: "ANA SAYFA", navHistory: "GEÇMİŞ", editBtn: "Düzenle", shiftCountText: "bu ayki vardiya sayısı", editShiftTitle: "Vardiyayı Düzenle", cash: "Nakit", cards: "POS", free: "FreeNow", earningsAnalysis: "GELİR ANALİZI", expensesAnalysis: "GİDER ANALİZI", monthlyTrend: "AYLIK TREND (BRÜT VS NET)", driverLabel: "SÜRÜCÜ", driverIdLabel: "KOD", taxiLabel: "TAKSİ", taxiNumLabel: "TAKSİ NUMARASI (Plaka/No)", fuel: "YAKIT", service: "Servis", wash: "Temizlik", otherExp: "Diğer", grossLabel: "Brüt", netLabel: "Net", sourcesComparison: "GELİR KAYNAKLARI KARŞILAŞTIRMASI (€)", totalTipsLabel: "Toplam Bahşiş", phCash: "💵 NAKİT (€)", phNotes: "Vardiya notları...", months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"], navSettings: "AYARLAR", settingsTitle: "Uygulama Ayarları", autoTaximeterTitle: "⚙️ OTOMATİK TAKSMETRE ALIMI", connectBleBtn: "🔵 BLE Bağlan", percentageLabel: "SÜRÜCÜ YÜZDESİ (%)", monthlyClearanceTitle: "📊 AYLIK SÜRÜCÜ HESAPLAŞMASI", clearanceGross: "Toplam Taksimetre (Z):", clearanceShare: "Sürücü Payı:", clearanceTips: "Toplam Bahşiş:", clearanceExpenses: "Toplam Giderler:", clearanceNet: "Sürücü Net Kazancı:", clearanceCashHeld: "Sürücüdeki Nakit:", clearancePayout: "Kalan Bakiye (Hesaplaşma):", subTitle: "👑 ABONELİK DURUMU", upgradeBtn: "PRO'YA YÜKSELT (4.99€/ay)", subLimitReached: "Ücretsiz 15 vardiya limitine ulaştınız. PRO'ya yükseltin!", expiresAt: "Bitiş:", freePlanInfo: "Ücretsiz plan ayda 15 vardiyaya izin verir.", proPlanInfo: "Sınırsız kayıt ve istatistiklere tam erişim hakkınız var." },
+            tr: { logout: "Çıkış", authTitle: "Sürücü Girişi", driverEmail: "SÜRÜCÜ E-POSTASI", secretCode: "GİZLİ ŞİFRE", loginBtn: "Giriş Yap", registerBtn: "Kayıt Ol", noAccount: "Hesabınız yok mu?", createAccount: "Hesap oluştur", loginHere: "Buradan giriş yapın", createTitle: "Hesap Oluştur", netMonth: "AYLIK NET", gross: "BRÜT", expenses: "GİDERLER", km: "KM", recentShifts: "Son Vardiyalar", historyTitle: "Yönetim Geçmişi", newShift: "📝 Yeni Vardiya", formDate: "TARİH", taximeterLabel: "TAKSMETRE (Z) (€)", kmStart: "BAŞLANGIÇ KM", kmEnd: "BİTİŞ KM", auto: "OTOMATİK", breakdown: "DETAYLI GELİRLER (GÜN SONU)", operatingExpenses: "İŞLETME GİDERLERI", saveShift: "Vardiyayı Kaydet", save: "Kaydet", cancel: "İptal / Geri", navHome: "ANA SAYFA", navHistory: "GEÇMİŞ", editBtn: "Düzenle", shiftCountText: "bu ayki vardiya sayısı", editShiftTitle: "Vardiyayı Düzenle", cash: "Nakit", cards: "POS", free: "FreeNow", earningsAnalysis: "GELİR ANALİZI", expensesAnalysis: "GİDER ANALİZI", monthlyTrend: "AYLIK TREND (BRÜT VS NET)", driverLabel: "SÜRÜCÜ", driverIdLabel: "KOD", taxiLabel: "TAKSİ", taxiNumLabel: "TAKSİ NUMARASI (Plaka/No)", fuel: "YAKIT", service: "Servis", wash: "Temizlik", otherExp: "Diğer", grossLabel: "Brüt", netLabel: "Net", sourcesComparison: "GELİR KAYNAKLARI KARŞILAŞTIRMASI (€)", totalTipsLabel: "Toplam Bahşiş", phCash: "💵 NAKİT (€)", phNotes: "Vardiya notları...", months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"], navSettings: "AYARLAR", settingsTitle: "Uygulama Ayarları", autoTaximeterTitle: "⚙️ OTOMATİK TAKSMETRE ALIMI", connectBleBtn: "🔵 BLE Bağlan", percentageLabel: "SÜRÜCÜ YÜZDESİ (%)", monthlyClearanceTitle: "📊 AYLIK SÜRÜCÜ HESAPLAŞMASI", clearanceGross: "Toplam Taksimetre (Z):", clearanceShare: "Sürücü Payı:", clearanceTips: "Toplam Bahşiş:", clearanceExpenses: "Toplam Giderler:", clearanceNet: "Sürücü Net Kazancı:", clearanceCashHeld: "Sürücüdeki Nakit:", clearancePayout: "Kalan Bakiye (Hesaplaşma):", subTitle: "👑 ABONELİK DURUMU", upgradeBtn: "PRO'YA YÜKSELT (4.99€/ay)", subLimitReached: "Ücretsiz 15 vardiya limitine ulaştınız. PRO'ya yükseltin!", expiresAt: "Bitiş:", freePlanInfo: "Ücretsiz plan ayda 15 vardiyaya izin verir.", proPlanInfo: "Sınırsız kayıt και istatistiklere tam erişim hakkınız var." },
             ru: { logout: "Выйти", authTitle: "Вход для водителей", driverEmail: "EMAIL ВОДИТЕЛЯ", secretCode: "СЕКРЕТНЫЙ КОД", loginBtn: "Войти", registerBtn: "Регистрация", noAccount: "Нет аккаунта?", createAccount: "Создать аккаунт", loginHere: "Войти здесь", createTitle: "Создать Аккаунт", netMonth: "ЧИСТЫЙ ДОХОД", gross: "ГРЯЗНЫЙ ДОХОД", expenses: "РАСХОДЫ", km: "КМ", recentShifts: "Последние смены", historyTitle: "История управления", newShift: "📝 Новая Смена", formDate: "ДАТА", taximeterLabel: "ТАКСОМЕТР (Z) (€)", kmStart: "НАЧАЛО КМ", kmEnd: "КОНЕЦ КМ", auto: "АВТО", breakdown: "ДЕТАЛИЗАЦИЯ ВЫРУЧКИ (КОНЕЦ ДНЯ)", operatingExpenses: "РАСХОДЫ НА ЭКСПЛУАТАЦИЮ", saveShift: "Сохранить Смену", save: "Сохранить", cancel: "Отмена / Назад", navHome: "ГЛАВНАЯ", navHistory: "ИСТОРИЯ", editBtn: "Редактировать", shiftCountText: "смен в этом месяце", editShiftTitle: "Редактировать Смену", cash: "Наличные", cards: "POS", free: "FreeNow", earningsAnalysis: "АНАЛИЗ ВЫРУЧКИ", expensesAnalysis: "АНАЛИЗ РАСХОДОВ", monthlyTrend: "ДИНАМИКА МЕСЯЦА (ОБЩИЙ VS ЧИСТЫЙ)", driverLabel: "ВОДИТЕЛЬ", driverIdLabel: "КОД", taxiLabel: "ТАКСИ", taxiNumLabel: "НОМЕР ТАКСИ (Номер/Бляха)", fuel: "Топливо", service: "Сервис", wash: "Мойка", otherExp: "Прочее", grossLabel: "Общий", netLabel: "Чистый", sourcesComparison: "СРАВНЕНИЕ ИСТОЧНИКОВ ДОХОДА (€)", totalTipsLabel: "Всего чаевых", phCash: "💵 НАЛИЧНЫЕ (€)", phNotes: "Примечания к смене...", months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"], navSettings: "НАСТРОЙКИ", settingsTitle: "Настройки Приложения", autoTaximeterTitle: "⚙️ АВТОМАТИЧЕСКИЙ ЗАПРОС ТАКСОМЕТРА", connectBleBtn: "🔵 Подключить BLE", percentageLabel: "ПРОЦЕНТ ВОДИТЕЛЯ (%)", monthlyClearanceTitle: "📊 ЕЖЕМЕСЯЧНЫЙ РАСЧЕТ ВОДИТЕЛЯ", clearanceGross: "Всего по таксометру (Z):", clearanceShare: "Доля Водителя:", clearanceTips: "Всего чаевых:", clearanceExpenses: "Всего расходов:", clearanceNet: "Чистый доход водителя:", clearanceCashHeld: "Наличные у водителя:", clearancePayout: "Итоговый баланс (К расчету):", subTitle: "👑 СТАТУС ПОДПИСКИ", upgradeBtn: "ПЕРЕЙТИ НА PRO (4.99€/мес)", subLimitReached: "Достигнут лимит 15 смен. Перейдите на PRO!", expiresAt: "Истекает:", freePlanInfo: "Бесплатный план разрешает 15 смен в месяц.", proPlanInfo: "Безлимитные записи и полный доступ к статистике." },
             hr: { logout: "Odjava", authTitle: "Prijava Vozača", driverEmail: "EMAIL VOZAČA", secretCode: "TAJNI KOD", loginBtn: "Prijava", registerBtn: "Registracija", noAccount: "Nemate račun?", createAccount: "Izradi račun", loginHere: "Prijavi se ovdje", createTitle: "Izradi Račun", netMonth: "NETO MJESEC", gross: "BRUTO", expenses: "TROŠKOVI", km: "KM", recentShifts: "Nedavne smjene", historyTitle: "Povijest Upravljanja", newShift: "📝 Nova Smjena", formDate: "DATUM", taximeterLabel: "TAKSOMETAR (Z) (€)", kmStart: "POČETNI KM", kmEnd: "ZAVRŠNI KM", auto: "AUTOMATSKI", breakdown: "DETALJNI PRIMICI (KRAJ DANA)", operatingExpenses: "OPERATIVNI TROŠKOVI", saveShift: "Zapiši Smjenu", save: "Spremi", cancel: "Otkaži / Nazad", navHome: "POČETNA", navHistory: "POVIJEST", editBtn: "Uredi", shiftCountText: "smjena ovaj mjesec", editShiftTitle: "Uredi Smjenu", cash: "Gotovina", cards: "POS", free: "FreeNow", earningsAnalysis: "ANALIZA ZARADE", expensesAnalysis: "ANALIZA TROŠKOVA", monthlyTrend: "MJESEČNI TREND (BRUTO VS NETO)", driverLabel: "VOZAČ", driverIdLabel: "KOD", taxiLabel: "TAKSI", taxiNumLabel: "BROJ TAKSIJA (Tablica/ID)", fuel: "Gorivo", service: "Servis", wash: "Pranje", otherExp: "Ostalo", grossLabel: "Bruto", netLabel: "Neto", sourcesComparison: "USPOREDBA IZVORA PRIHODA (€)", totalTipsLabel: "Ukupno Napojnice", phCash: "💵 GOTOVINA (€)", phNotes: "Bilješke o smjeni...", months: ["Siječanj", "Veljača", "Ožujak", "Travanj", "Svibanj", "Lipanj", "Srpanj", "Kolovoz", "Rujan", "Listopad", "Studeni", "Prosinac"], navSettings: "POSTAVKE", settingsTitle: "Postavke Aplikacije", autoTaximeterTitle: "⚙️ AUTOMATSKO DOHVAĆANJE TAKSOMETRA", connectBleBtn: "🔵 Poveži BLE", percentageLabel: "POSTOTAK VOZAČA (%)", monthlyClearanceTitle: "📊 MJESEČNI OBRAČUN VOZAČA", clearanceGross: "Ukupno Taksometar (Z):", clearanceShare: "Udio Vozača:", clearanceTips: "Ukupno Napojnice:", clearanceExpenses: "Ukupno Troškovi:", clearanceNet: "Neto zarada vozača:", clearanceCashHeld: "Gotovina kod vozača:", clearancePayout: "Konačni saldo (Za naplatu):", subTitle: "👑 STATUS PRETPLATE", upgradeBtn: "NADOGRADI NA PRO (4.99€/mj)", subLimitReached: "Dosegli ste limit od 15 smjena. Nadogradite na PRO!", expiresAt: "Istječe:", freePlanInfo: "Besplatan plan dozvoljava 15 smjena mjesečno.", proPlanInfo: "Imate neograničen unos i potpuni pristup statistici." },
-            sr: { logout: "Odjava", authTitle: "Prijava Vozača", driverEmail: "EMAIL VOZAČA", secretCode: "TAJNI KOD", loginBtn: "Prijava", registerBtn: "Registracija", noAccount: "Nemate nalog?", createAccount: "Napravi nalog", loginHere: "Prijavi se ovde", createTitle: "Napravi Nalog", netMonth: "NETO MESEC", gross: "BRUTO", expenses: "TROŠKOVI", km: "KM", recentShifts: "Nedavne smene", historyTitle: "Istorija Upravljanja", newShift: "📝 Nova Smena", formDate: "DATUM", taximeterLabel: "TAKSOMETAR (Z) (€)", kmStart: "POČETNI KM", kmEnd: "ZAVRŠNI KM", auto: "AUTOMATSKI", breakdown: "DETALJNI PAZAR (KRAJ DANA)", operatingExpenses: "OPERATIVNI TROŠKOVI", saveShift: "Zavedi Smenu", save: "Sačuvaj", cancel: "Otkaži / Nazad", navHome: "POČETNA", navHistory: "ISTORIJA", editBtn: "Izmeni", shiftCountText: "smena ovaj mesec", editShiftTitle: "Izmeni Smenu", cash: "Gotovina", cards: "POS", free: "FreeNow", earningsAnalysis: "ANALIZA ZARADE", expensesAnalysis: "ANALIZA TROŠKOVA", monthlyTrend: "MESEČNI TREND (BRUTO VS NETO)", driverLabel: "VOZAČ", driverIdLabel: "KOD", taxiLabel: "TAXI", taxiNumLabel: "BROJ TAKSIJA (Tablica/ID)", fuel: "Gorivo", service: "Servis", wash: "Pranje", otherExp: "Ostalo", grossLabel: "Bruto", netLabel: "Neto", sourcesComparison: "POREĐENJE IZVORA PRIHODA (€)", totalTipsLabel: "Ukupno Bakšiš", phCash: "💵 GOTOVINA (€)", phNotes: "Beleške o smeni...", months: ["Januar", "Februar", "Mart", "April", "Maj", "Jun", "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"], navSettings: "POSTAVKE", settingsTitle: "Postavke Aplikacije", autoTaximeterTitle: "⚙️ AUTOMATSKO DOHVATANJE TAKSOMETRA", connectBleBtn: "🔵 Poveži BLE", percentageLabel: "POSTOTAK VOZAČA (%)", monthlyClearanceTitle: "📊 MESEČNI OBRAČUN VOZAČA", clearanceGross: "Ukupno Taksometar (Z):", clearanceShare: "Udeo Vozača:", clearanceTips: "Ukupno Bakšiš:", clearanceExpenses: "Ukupno Troškovi:", clearanceNet: "Neto zarada vozača:", clearanceCashHeld: "Gotovina kod vozača:", clearancePayout: "Konačni saldo (Za naplatu):", subTitle: "👑 STATUS PRETPLATE", upgradeBtn: "NADOGRADI NA PRO (4.99€/mes)", subLimitReached: "Dostigli ste limit od 15 smena. Nadogradite na PRO!", expiresAt: "Ističe:", freePlanInfo: "Besplatan plan dozvoljava 15 smena mesečno.", proPlanInfo: "Imate neograničen unos i potpuni pristup statistici." }
+            sr: { logout: "Odjava", authTitle: "Prijava Vozača", driverEmail: "EMAIL VOZAČA", secretCode: "TAJNI KOD", loginBtn: "Prijava", registerBtn: "Registracija", noAccount: "Nemate nalog?", createAccount: "Napravi nalog", loginHere: "Prijavi se ovde", createTitle: "Napravi Nalog", netMonth: "NETO MESEC", gross: "BRUTO", expenses: "TROŠKOVI", km: "KM", recentShifts: "Nedavne smene", historyTitle: "Istorija Upravljanja", newShift: "📝 Nova Smena", formDate: "DATUM", taximeterLabel: "TAKSOMETAR (Z) (€)", kmStart: "POČETNI KM", kmEnd: "ZAVRŠNI KM", auto: "AUTOMATSKI", breakdown: "DETALJNI PAZAR (KRAJ DANA)", operatingExpenses: "OPERATIVNI TROŠKOVI", saveShift: "Zavedi Smenu", save: "Sačuvaj", cancel: "Otkaži / Nazad", navHome: "POČETNA", navHistory: "ISTORIJA", editBtn: "Izmeni", shiftCountText: "smena ovaj mesec", editShiftTitle: "Izmeni Smenu", cash: "Gotovina", cards: "POS", free: "FreeNow", earningsAnalysis: "ANALIZA ZARADE", expensesAnalysis: "ANALIZA TROŠKOVA", monthlyTrend: "MESEČNI TREND (BRUTO VS NETO)", driverLabel: "VOZAČ", driverIdLabel: "KOD", taxiLabel: "TAXI", taxiNumLabel: "BROJ TAKSIJA (Tablica/ID)", fuel: "Gorivo", service: "Servis", wash: "Pranje", otherExp: "Ostalo", grossLabel: "Bruto", netLabel: "Neto", sourcesComparison: "POREĐENJE IZVORA PRIHODA (€)", totalTipsLabel: "Ukupno Bakšiš", phCash: "💵 GOTOVINA (€)", phNotes: "Beleške o smeni...", months: ["Januar", "Februar", "Mart", "April", "Jun", "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"], navSettings: "POSTAVKE", settingsTitle: "Postavke Aplikacije", autoTaximeterTitle: "⚙️ AUTOMATSKO DOHVATANJE TAKSOMETRA", connectBleBtn: "🔵 Poveži BLE", percentageLabel: "POSTOTAK VOZAČA (%)", monthlyClearanceTitle: "📊 MESEČNI OBRAČUN VOZAČA", clearanceGross: "Ukupno Taksometar (Z):", clearanceShare: "Udeo Vozača:", clearanceTips: "Ukupno Bakšiš:", clearanceExpenses: "Ukupno Troškovi:", clearanceNet: "Neto zarada vozača:", clearanceCashHeld: "Gotovina kod vozača:", clearancePayout: "Konačni saldo (Za naplatu):", subTitle: "👑 STATUS PRETPLATE", upgradeBtn: "NADOGRADI NA PRO (4.99€/mes)", subLimitReached: "Dostigli ste limit od 15 smena. Nadogradite na PRO!", expiresAt: "Ističe:", freePlanInfo: "Besplatan plan dozvoljava 15 smena mesečno.", proPlanInfo: "Imate neograničen unos i potpuni pristup statistici." }
         };
 
         const authScreen = document.getElementById('authScreen');
@@ -547,7 +545,7 @@
                     btn.textContent = "🟢 Επιτυχία";
                     btn.style.color = "#34d399";
                     btn.style.borderColor = "#34d399";
-                    if (typeof updateTipsLive === "function") { updateTipsLive(); }
+                    updateTipsLive();
                     alert(`Το ποσό λήφθηκε αυτόματα: ${finalPrice.toFixed(2)} €`);
                 }
             } catch (error) {
@@ -600,7 +598,6 @@
                     await signInWithEmailAndPassword(auth, email, password);
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    // Νέος χρήστης ξεκινάει πάντα με το Free πλάνο
                     await setDoc(doc(db, "users", cred.user.uid), { 
                         email, 
                         taxiNumber: taxiNo, 
@@ -688,7 +685,6 @@
             }
         }
 
-        // Dummy αναβάθμιση για να δεις τη λειτουργία (Χωρίς Stripe ακόμα)
         document.getElementById('btnUpgradeSub').addEventListener('click', async () => {
             if (!currentUser) return;
             const confirmUpgrade = confirm("Για τις ανάγκες της δοκιμής, πατώντας ΟΚ θα αναβαθμιστείτε στο PRO πλάνο για ένα μήνα χωρίς χρέωση. Εδώ αργότερα θα συνδεθεί το Stripe.");
@@ -697,7 +693,7 @@
             try {
                 document.getElementById('btnUpgradeSub').textContent = "⏳ Παρακαλώ περιμένετε...";
                 const expiryDate = new Date();
-                expiryDate.setMonth(expiryDate.getMonth() + 1); // Προσθήκη 1 μήνα
+                expiryDate.setMonth(expiryDate.getMonth() + 1);
 
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     subscriptionPlan: 'pro',
@@ -714,17 +710,16 @@
             }
         });
 
-        // Έλεγχος Συνδρομής πριν τη δημιουργία Νέας Βάρδιας
         function checkSubscriptionLimit() {
-            if (userSubPlan === 'pro') return true; // Ελεύθερη πρόσβαση
+            if (userSubPlan === 'pro') return true;
 
-            const currentMonthPrefix = new Date().toISOString().substring(0, 7); // π.χ. "2026-05"
+            const currentMonthPrefix = new Date().toISOString().substring(0, 7);
             const shiftsThisMonth = allShiftsGlobal.filter(s => s.date.startsWith(currentMonthPrefix)).length;
 
             if (shiftsThisMonth >= 15) {
                 const t = translations[currentLang] || translations['el'];
                 alert(t.subLimitReached);
-                routeTo('settings'); // Τον στέλνει στη σελίδα αναβάθμισης
+                routeTo('settings');
                 return false;
             }
             return true;
@@ -758,9 +753,9 @@
         });
 
         document.getElementById('driverPercentageInput').addEventListener('input', renderDashboardAndLists);
-
         document.getElementById('kmStart').addEventListener('input', calculateLiveKm);
         document.getElementById('kmEnd').addEventListener('input', calculateLiveKm);
+
         function calculateLiveKm() {
             const kmStart = parseInt(document.getElementById('kmStart').value) || 0;
             const kmEnd = parseInt(document.getElementById('kmEnd').value) || 0;
@@ -789,9 +784,7 @@
         showSettingsBtn.addEventListener('click', () => { routeTo('settings'); });
         
         floatingAddBtn.addEventListener('click', () => { 
-            // Έλεγχος Paywall πριν ανοίξει η φόρμα
             if (!checkSubscriptionLimit()) return;
-
             resetFormState(); 
             routeTo('form'); 
             setTimeout(() => { document.getElementById('taximetro').focus(); }, 150);
@@ -841,11 +834,7 @@
             if (!currentUser) return;
 
             const editingId = document.getElementById('editingShiftId').value;
-            
-            // Επιπλέον Έλεγχος Paywall κατά την αποθήκευση, αν ΔΕΝ είναι επεξεργασία (άρα είναι νέα βάρδια)
-            if (!editingId && !checkSubscriptionLimit()) {
-                return;
-            }
+            if (!editingId && !checkSubscriptionLimit()) return;
             
             const taximetro = parseFloat(document.getElementById('taximetro').value) || 0;
             const metrita = parseFloat(document.getElementById('metrita').value) || 0;
@@ -858,7 +847,10 @@
             const plysimo = parseFloat(document.getElementById('plysimo').value) || 0;
             const allaExoda = parseFloat(document.getElementById('allaExoda').value) || 0;
 
-            if (parseInt(document.getElementById('kmEnd').value) <= parseInt(document.getElementById('kmStart').value)) {
+            const kmStart = parseInt(document.getElementById('kmStart').value) || 0;
+            const kmEnd = parseInt(document.getElementById('kmEnd').value) || 0;
+
+            if (kmEnd <= kmStart) {
                 alert("Σφάλμα: Τα χιλιόμετρα λήξης πρέπει να είναι μεγαλύτερα από τα χιλιόμετρα έναρξης.");
                 return;
             }
@@ -872,9 +864,9 @@
             const shiftData = {
                 date: document.getElementById('date').value,
                 taximetro: taximetro,
-                kmStart: parseInt(document.getElementById('kmStart').value) || 0,
-                kmEnd: parseInt(document.getElementById('kmEnd').value) || 0,
-                totalKm: parseInt(document.getElementById('kmEnd').value) - (parseInt(document.getElementById('kmStart').value) || 0),
+                kmStart: kmStart,
+                kmEnd: kmEnd,
+                totalKm: kmEnd - kmStart,
                 metrita: metrita,
                 kartes: kartes,
                 freenow: freenow,
@@ -936,7 +928,7 @@
             document.getElementById('kartes').value = shift.kartes;
             document.getElementById('freenow').value = shift.freenow;
             document.getElementById('uber').value = shift.uber || 0;
-            document.getElementById('tips').value = "Υπολογίζεται αυτόματα...";
+            
             document.getElementById('kausima').value = shift.kausima;
             document.getElementById('service').value = shift.service;
             document.getElementById('plysimo').value = shift.plysimo;
@@ -946,6 +938,7 @@
             document.getElementById('cancelEditBtn').classList.remove('hidden');
             applyTranslations();
             calculateLiveKm();
+            updateTipsLive();
             routeTo('form');
         };
 
